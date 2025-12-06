@@ -1,0 +1,222 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Notifications</title>
+
+  <style>
+    :root {
+      --blue1: #0d6efd;
+      --blue2: #cfe2ff;
+      --blue3: #e9f2ff;
+      --dark: #1a1a1a;
+      --light: #6c757d;
+      --white: #ffffff;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      font-family: Arial, sans-serif;
+    }
+
+    body {
+      display: flex;
+      background: var(--blue3);
+      min-height: 100vh;
+    }
+
+    /* ---------------- SIDEBAR ---------------- */
+    .sidebar {
+      width: 240px;
+      background: #1e3a8a;
+      color: white;
+      padding-top: 30px;
+      display: flex;
+      flex-direction: column;
+      position: fixed;
+      left: 0;
+      top: 0;
+      bottom: 0;
+      z-index: 100;
+    }
+
+    .sidebar h2 {
+      text-align: center;
+      margin-bottom: 25px;
+      font-size: 22px;
+      font-weight: bold;
+    }
+
+    .sidebar a {
+      display: block;
+      padding: 14px 25px;
+      color: white;
+      text-decoration: none;
+      font-size: 16px;
+      margin: 5px 0;
+      border-left: 4px solid transparent;
+      transition: 0.3s;
+    }
+
+    .sidebar a:hover,
+    .sidebar .active {
+      background: #3b82f6;
+      border-left: 4px solid #ffffff;
+    }
+
+    /* ---------------- CONTENT AREA ---------------- */
+    .content {
+      margin-left: 250px;
+      padding: 30px;
+      width: 100%;
+    }
+
+    h1 {
+      text-align: center;
+      color: var(--blue1);
+      margin-bottom: 25px;
+      font-size: 26px;
+    }
+
+    /* ---------------- NOTIFICATION GRID ---------------- */
+    .notifications-container {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
+      gap: 20px;
+      margin-bottom: 30px;
+    }
+
+    .notification-card {
+      background: var(--white);
+      padding: 18px;
+      border-radius: 12px;
+      border-left: 6px solid var(--blue1);
+      box-shadow: 0 5px 15px rgba(0,0,0,0.10);
+      transition: 0.2s;
+      position: relative;
+    }
+
+    .notification-card:hover {
+      transform: translateY(-4px);
+    }
+
+    .delete-btn {
+      position: absolute;
+      right: 12px;
+      top: 12px;
+      font-size: 20px;
+      text-decoration: none;
+      color: #c70000;
+      transition: 0.2s;
+    }
+    .delete-btn:hover {
+      transform: scale(1.2);
+      color: #900000;
+    }
+
+    .title {
+      font-size: 18px;
+      font-weight: bold;
+      color: var(--dark);
+      margin-bottom: 8px;
+    }
+
+    .message {
+      color: var(--light);
+      margin-bottom: 10px;
+      line-height: 1.5;
+    }
+
+    .date-time {
+      font-size: 13px;
+      color: #777;
+      margin-bottom: 10px;
+    }
+
+    .media img,
+    .media video {
+      width: 100%;
+      max-height: 220px;
+      object-fit: cover;
+      border-radius: 10px;
+      margin-top: 10px;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.15);
+    }
+
+  
+  </style>
+</head>
+
+<body>
+
+  <!-- SIDEBAR -->
+  <div class="sidebar">
+    <h2>Panchayat</h2>
+    <a href="{% url 'Mainpage' %}">🏠 Home</a>
+    <a href="{% url 'notification_page2' %}" class="active">🔔 Notifications</a>
+    <a href="{% url 'complaint_form' %}" >📝 Complaints</a>
+    <a href="{% url 'requestform' %}">📋 Requests</a>
+     <a href="{% url 'Trackstatus' %}">🔍 Complaint Track Status</a>
+  <a href="{% url 'Trackstatus2' %}">🔍 Request Track Status</a>
+  </div>
+
+
+  <!-- MAIN CONTENT -->
+  <div class="content">
+
+
+    <h1>📢 Notifications</h1>
+
+    {% if messages %}
+    <div>
+      {% for message in messages %}
+        <p style="text-align:center; color: green; font-weight: bold;">{{ message }}</p>
+      {% endfor %}
+    </div>
+    {% endif %}
+
+    <div class="notifications-container">
+      {% for post in posts %}
+      <div class="notification-card">
+        
+        <a href="{% url 'delete_post2' post.id %}" class="delete-btn"
+           onclick="return confirm('Are you sure?');">🗑️</a>
+
+        <div class="title">{{ post.title }}</div>
+        <div class="message">{{ post.message }}</div>
+        <div class="date-time">{{ post.created_at }}</div>
+
+        {% if post.image %}
+        <div class="media">
+          <img src="{{ post.image.url }}" alt="Image">
+        </div>
+        {% endif %}
+
+        {% if post.video %}
+        <div class="media">
+          <video controls>
+            <source src="{{ post.video.url }}" type="video/mp4">
+          </video>
+        </div>
+        {% endif %}
+      </div>
+      {% empty %}
+        <p style="grid-column: 1 / -1; text-align:center;">No notifications found.</p>
+      {% endfor %}
+    </div>
+
+  </div>
+
+  <script>
+    function confirmDelete(postId) {
+      if (confirm("Are you sure you want to delete this notification?")) {
+        window.location.href = "/notifications/delete/" + postId + "/";
+      }
+    }
+  </script>
+
+</body>
+</html>

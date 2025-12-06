@@ -1,0 +1,78 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Welcome Page</title>
+  <style>
+    /* Root colors */
+    :root {
+      --bg: #f8bbbb;      /* pale green background */
+      --text:#9c0707;  /* dark green text */
+    }
+
+    body, html {
+      margin: 0;
+      padding: 0;
+      background-color: var(--bg);
+      font-family: Arial, sans-serif;
+    }
+
+    /* Main container */
+    .welcome-container {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      text-align: center;
+      padding-top: 40px;
+    }
+
+    /* Tamil Nadu emblem */
+    .logo {
+      width: 150px;
+      height: auto;
+      margin-bottom: 20px;
+    }
+
+    /* Town Illustration */
+    .town-image {
+      width: 250px;
+      height: auto;
+      margin-bottom: 20px;
+    }
+
+    /* Text part */
+    .welcome-text h2 {
+      margin: 5px 0;
+      font-weight: normal;
+      color: var(--text);
+    }
+
+    .welcome-text h1 {
+      margin: 5px 0;
+      font-size: 24px;
+      color: var(--text);
+      font-weight: bold;
+    }
+  </style>
+</head>
+<body>
+  <div class="welcome-container">
+    <img src="{% static 'images/taminadulogo.png' %}" alt="Tamil Nadu Logo" class="logo"><br><br><br><br><br><br>
+    <img src="{% static 'images/town1.jpg' %}" alt="Town Illustration" class="town-image">
+    <div class="welcome-text">
+      <h2>Welcome To</h2>
+      <h1>Courtallam Town Panchayat</h1>
+      <h2>EO App</h2>
+    </div>
+  </div>
+
+  <script>
+    // Redirect after 3 seconds
+    setTimeout(() => {
+      window.location.href = "/login4/"; // Change this to your login page
+    }, 3000);
+  </script>
+</body>
+</html>

@@ -1,0 +1,310 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Achievements</title>
+
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; font-family: "Segoe UI", Arial; }
+    body { display: flex; background: #f1f7ff; min-height: 100vh; }
+
+    /* Sidebar */
+    .sidebar { 
+      width: 240px; 
+      height: 100vh; 
+      background: #1e3a8a; 
+      color: #fff; 
+      padding: 25px 0; 
+      position: fixed; 
+      top: 0; 
+      left: 0;
+      overflow-y: auto;
+    }
+    .sidebar h2 { 
+      text-align: center; 
+      margin-bottom: 20px; 
+      font-size: 22px; 
+      letter-spacing: 1px; 
+      font-weight: bold; 
+    }
+    .menu a { 
+      display: block; 
+      padding: 14px 25px; 
+      color: white; 
+      text-decoration: none; 
+      font-size: 16px; 
+      transition: 0.2s; 
+    }
+    .menu a:hover { 
+      background: #144f8a; 
+      padding-left: 30px; 
+    }
+    .sidebar .active {
+      background: #3b82f6;
+      border-left: 4px solid #ffffff;
+    }
+
+    /* Main Content */
+    .main-content { 
+      margin-left: 240px; 
+      padding: 20px; 
+      width: calc(100% - 240px); 
+    }
+
+    /* Header */
+    .header { 
+      background: white; 
+      padding: 18px 25px; 
+      border-radius: 10px; 
+      display: flex; 
+      justify-content: space-between; 
+      align-items: center; 
+      box-shadow: 0 3px 10px rgba(0,0,0,0.1); 
+      margin-bottom: 20px; 
+    }
+    .header h2 { 
+      color: #0d3b66; 
+      font-size: 24px; 
+      font-weight: 600;
+    }
+    .back-btn {
+      background: #3b82f6;
+      color: white;
+      padding: 8px 16px;
+      border-radius: 8px;
+      font-size: 16px;
+      text-decoration: none;
+      font-weight: 600;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      transition: 0.2s;
+    }
+    .back-btn:hover {
+      background: #2563eb;
+      transform: translateY(-2px);
+    }
+
+    /* Filter Section */
+    /* Filter Section */
+    .filter-section {
+      background: white;
+      padding: 20px;
+      border-radius: 10px;
+      box-shadow: 0 3px 10px rgba(0,0,0,0.1);
+      margin-bottom: 20px;
+    }
+    .filter-title {
+      font-size: 18px;
+      color: #0d3b66;
+      font-weight: 600;
+      margin-bottom: 15px;
+    }
+    .filter-container {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+      gap: 15px;
+    }
+    .filter-group { 
+      display: flex; 
+      flex-direction: column; 
+    }
+    .filter-group label { 
+      font-size: 14px; 
+      color: #0d3b66; 
+      margin-bottom: 6px; 
+      font-weight: 600; 
+    }
+    .filter-group input {
+      padding: 10px 12px;
+      border-radius: 8px;
+      border: 1px solid #cbd5e1;
+      font-size: 14px;
+      background-color: white;
+      transition: 0.2s;
+    }
+    .filter-group input:focus {
+      outline: none;
+      border-color: #3b82f6;
+      box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
+    }
+
+    /* Table */
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      background: white;
+      border-radius: 10px;
+      overflow: hidden;
+      box-shadow: 0 3px 10px rgba(0,0,0,0.1);
+    }
+    th, td {
+      padding: 14px 16px;
+      font-size: 14px;
+      color: #334155;
+      border-bottom: 1px solid #e2e8f0;
+      text-align: left;
+    }
+    th {
+      background: #1e3a8a;
+      color: white;
+      font-size: 15px;
+    }
+    tr:hover {
+      background: #f3f8ff;
+    }
+
+    td.status {
+      font-weight: bold;
+      color: #10b981;
+    }
+
+    /* Empty State */
+    .empty-state {
+      text-align: center;
+      padding: 60px 20px;
+      background: white;
+      border-radius: 12px;
+      box-shadow: 0 3px 10px rgba(0,0,0,0.1);
+      margin-top: 20px;
+    }
+
+    @media (max-width: 768px) {
+      .sidebar { width: 100%; position: relative; }
+      .main-content { margin-left: 0; width: 100%; }
+      table { font-size: 12px; }
+      th, td { padding: 10px; }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Sidebar -->
+  <div class="sidebar">
+    <h2>PANCHAYAT</h2>
+    <div class="menu">
+      <a href="{% url 'Mainsupervisor' %}">🏠 Dashboard</a>
+      <a href="{% url 'complaintsupervisor' %}">📝 Complaints</a>
+      <a href="{% url 'requestsupervisor' %}">📋 Requests</a>
+      <a href="{% url 'notification_page' %}">🔔 Notifications</a>
+      <a href="{% url 'Achievementsupervisor' %}" class="active">🏆 Achievements</a>
+    </div>
+  </div>
+
+  <!-- Main Content -->
+  <div class="main-content">
+
+    <!-- Header -->
+    <div class="header">
+      <h2>Achievements</h2>
+      <a href="{% url 'Mainsupervisor' %}" class="back-btn">🏠 Dashboard</a>
+    </div>
+
+    <!-- Filter Section -->
+    <div class="filter-section">
+      <div class="filter-title">🔍 Filter Achievements</div>
+      <div class="filter-container">
+
+        <div class="filter-group">
+          <label>Search by Name</label>
+          <input type="text" id="name-filter" placeholder="Filter by Name...">
+        </div>
+
+        <div class="filter-group">
+          <label>Area</label>
+          <input type="text" id="area-filter" placeholder="Filter by Area...">
+        </div>
+         <div class="filter-group">
+          <label>Type</label>
+          <input type="text" id="type-filter" placeholder="Filter by Type...">
+        </div>
+      </div>
+    </div>
+
+    <!-- Table Section -->
+    {% if complaints %}
+    <table id="achievements-table">
+      <thead>
+        <tr>
+          <th>Name</th>
+          <th>Phone</th>
+          <th>Address</th>
+          <th>Area</th>
+          <th>Issue</th>
+          <th>Supervisor</th>
+          <th>Type</th>
+          <th>Status</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for a in complaints %}
+          {% if a.status == 'verified' %}
+          <tr>
+            <td>{{ a.user  }}</td>
+            <td>{{ a.phone }}</td>
+            <td>{{ a.address }}</td>
+            <td>{{ a.location }}</td>
+            <td>{{ a.complaint_type }}</td>
+            <td>{{ a.supervisor_name }}</td>
+            <td>Complaint</td>
+            <td class="status">Verified</td>
+          </tr>
+          {% endif %}
+        {% endfor %}
+        {% for r in requests %}
+          {% if r.status == 'verified' %}          
+          <tr>
+            <td>{{ r.name  }}</td>
+            <td>{{ r.phone_number }}</td>
+            <td>{{ r.address }}</td>
+            <td>{{ r.area }}</td>
+            <td>{{ r.request_type }}</td>
+            <td>{{ r.supervisor_name }}</td>
+            <td>Request</td>
+            <td class="status">Verified</td>
+          </tr>
+          {% endif %}
+        {% endfor %}
+      </tbody>
+    </table>
+    {% else %}
+    <div class="empty-state">
+      <h3>No Achievements Found</h3>
+      <p>No verified achievements are available at the moment.</p>
+    </div>
+    {% endif %}
+
+  </div>
+
+  <script>
+    const nameFilter = document.getElementById("name-filter");
+    const areaFilter = document.getElementById("area-filter");
+    const typeFilter = document.getElementById("type-filter");
+    const rows = document.querySelectorAll("#achievements-table tbody tr");
+
+    function filterTable() {
+      const nameVal = nameFilter.value.toLowerCase();
+      const areaVal = areaFilter.value.toLowerCase();
+      const typeVal = typeFilter.value.toLowerCase();
+
+      rows.forEach(row => {
+        const name = row.children[0].textContent.toLowerCase();
+        const area = row.children[1].textContent.toLowerCase();
+        const type = row.children[6].textContent.toLowerCase();
+
+        const matchName = name.includes(nameVal);
+        const matchArea = area.includes(areaVal);
+        const matchType = type.includes(typeVal);
+
+        row.style.display = (matchName && matchArea && matchType) ? "" : "none";
+      });
+    }
+
+    nameFilter.addEventListener("input", filterTable);
+    areaFilter.addEventListener("input", filterTable);
+    typeFilter.addEventListener("input", filterTable);
+  </script>
+
+</body>
+</html>

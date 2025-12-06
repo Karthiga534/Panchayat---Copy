@@ -1,0 +1,128 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>EO Dashboard</title>
+  <style>
+    :root {
+      --bg: #f8bbbb;
+      --accent: #630707;
+      --header1: #f8bbbb;
+      --header2: #af5353;
+      --header3: #740202;
+    }
+
+    body {
+      font-family: "Poppins", sans-serif;
+      margin: 0;
+      padding: 0;
+      background: var(--bg);
+      display: flex;
+      justify-content: center;
+      min-height: 100vh;
+    }
+
+    .container {
+      width: 95%;
+      max-width: 1000px;
+      padding: 20px;
+      box-sizing: border-box;
+    }
+
+    /* Header */
+    .header {
+      background: var(--header2);
+      color: #fff;
+      padding: 25px;
+      border-radius: 15px;
+      text-align: center;
+      box-shadow: 0 4px 20px rgba(0,0,0,0.2);
+      margin-bottom: 30px;
+    }
+
+    .header h1 {
+      margin: 0;
+      font-size: 2.2em;
+    }
+
+    .header .username {
+      font-size: 1.2em;
+      margin-top: 5px;
+      font-weight: bold;
+    }
+
+    /* Grid Card Section */
+    .grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+      gap: 25px;
+    }
+
+    .card {
+      background: #fff;
+      border-radius: 15px;
+      padding: 25px;
+      text-align: center;
+      box-shadow: 0 4px 15px rgba(0,0,0,0.15);
+      transition: transform 0.3s, box-shadow 0.3s;
+      cursor: pointer;
+      color: var(--header3);
+      font-weight: bold;
+    }
+
+    .card:hover {
+      transform: translateY(-5px);
+      box-shadow: 0 8px 20px rgba(0,0,0,0.25);
+    }
+
+    .card .icon {
+      font-size: 2.5em;
+      margin-bottom: 15px;
+      color: var(--accent);
+    }
+
+    .card p {
+      margin: 0;
+      font-size: 1em;
+    }
+
+    /* Responsive */
+    @media (max-width: 600px) {
+      .grid {
+        grid-template-columns: 1fr;
+      }
+    }
+
+  </style>
+</head>
+<body>
+  <div class="container">
+    <!-- Header -->
+    <div class="header">
+      <h1>Executive Officer Dashboard</h1>
+      <div class="username">{{ admin_username }}</div>
+    </div>
+
+    <!-- Dashboard Cards -->
+    <div class="grid">
+      <a href="{% url 'public_signups' %}" class="card">
+        <div class="icon">📋</div>
+        <p>Public Signups</p>
+      </a>
+
+      <a href="{% url 'eo_requests' %}" class="card">
+        <div class="icon">📝</div>
+        <p>Requests</p>
+      </a>
+
+      <a href="{% url 'eo_complaints' %}" class="card">
+        <div class="icon">⚠</div>
+        <p>Complaints</p>
+      </a>
+
+     
+    </div>
+  </div>
+</body>
+</html>

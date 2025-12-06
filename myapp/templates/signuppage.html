@@ -1,0 +1,526 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sign Up - Vinsup Infotech</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            height: 100vh;
+            display: flex;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            overflow: hidden;
+        }
+
+        .container {
+            display: flex;
+            width: 100%;
+            height: 100%;
+        }
+
+        .left-section {
+            flex: 1;
+            background: white;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding: 30px 40px;
+            position: relative;
+            overflow-y: auto;
+        }
+
+        .signup-content {
+            width: 100%;
+            max-width: 450px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        .logo {
+            width: 70px;
+            height: 70px;
+            margin-bottom: 15px;
+        }
+
+        .logo-circle {
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(135deg, #2196F3 0%, #1976D2 100%);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 4px 15px rgba(33, 150, 243, 0.3);
+        }
+
+        .logo-icon {
+            width: 45px;
+            height: 45px;
+            background: white;
+            border-radius: 8px;
+            position: relative;
+        }
+
+        .logo-icon::before {
+            content: '';
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            width: 28px;
+            height: 28px;
+            background: linear-gradient(135deg, #2196F3 0%, #1976D2 100%);
+            border-radius: 4px;
+        }
+
+        h2 {
+            color: #333;
+            margin-bottom: 8px;
+            font-size: 26px;
+        }
+
+        .subtitle {
+            color: #666;
+            margin-bottom: 25px;
+            font-size: 14px;
+            text-align: center;
+        }
+
+        .subtitle a {
+            color: #2196F3;
+            text-decoration: none;
+            font-weight: 500;
+        }
+
+        .subtitle a:hover {
+            text-decoration: underline;
+        }
+
+        .signup-form {
+            width: 100%;
+        }
+
+        .form-group {
+            margin-bottom: 18px;
+        }
+
+        label {
+            display: block;
+            color: #555;
+            margin-bottom: 6px;
+            font-size: 14px;
+            font-weight: 500;
+        }
+
+        input[type="text"],
+        input[type="password"],
+        textarea {
+            width: 100%;
+            padding: 11px 14px;
+            border: 2px solid #e0e0e0;
+            border-radius: 6px;
+            font-size: 14px;
+            transition: all 0.3s;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        input[type="text"]:focus,
+        input[type="password"]:focus,
+        textarea:focus {
+            outline: none;
+            border-color: #2196F3;
+            box-shadow: 0 0 0 3px rgba(33, 150, 243, 0.1);
+        }
+
+        textarea {
+            resize: vertical;
+            min-height: 70px;
+        }
+
+        .password-group {
+            position: relative;
+        }
+
+        .toggle-password {
+            position: absolute;
+            right: 14px;
+            top: 50%;
+            transform: translateY(-50%);
+            cursor: pointer;
+            font-size: 18px;
+            user-select: none;
+        }
+
+        .register-btn {
+            width: 100%;
+            padding: 13px;
+            background: linear-gradient(135deg, #2196F3 0%, #1976D2 100%);
+            color: white;
+            border: none;
+            border-radius: 6px;
+            font-size: 15px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+            box-shadow: 0 4px 15px rgba(33, 150, 243, 0.3);
+            margin-top: 8px;
+        }
+
+        .register-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(33, 150, 243, 0.4);
+        }
+
+        .register-btn:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+            transform: none;
+        }
+
+        .login-footer {
+            text-align: center;
+            margin-top: 18px;
+            padding-bottom: 10px;
+        }
+
+        .login-footer a {
+            color: #2196F3;
+            text-decoration: none;
+            font-size: 14px;
+            font-weight: 500;
+        }
+
+        .login-footer a:hover {
+            text-decoration: underline;
+        }
+
+        .footer {
+            text-align: center;
+            font-size: 11px;
+            color: #999;
+            margin-top: 15px;
+            padding-bottom: 20px;
+        }
+
+        .footer a {
+            color: #2196F3;
+            text-decoration: none;
+            margin: 0 6px;
+        }
+
+        .right-section {
+            flex: 1;
+            background: linear-gradient(135deg, #E3F2FD 0%, #BBDEFB 100%);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 50px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .illustration {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+        }
+
+        .mountain-1 {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 0;
+            height: 0;
+            border-left: 300px solid transparent;
+            border-right: 300px solid transparent;
+            border-bottom: 400px solid #90CAF9;
+            opacity: 0.6;
+        }
+
+        .mountain-2 {
+            position: absolute;
+            bottom: 0;
+            right: 0;
+            width: 0;
+            height: 0;
+            border-left: 250px solid transparent;
+            border-right: 250px solid transparent;
+            border-bottom: 350px solid #64B5F6;
+            opacity: 0.7;
+        }
+
+        .mountain-3 {
+            position: absolute;
+            bottom: 0;
+            left: 30%;
+            width: 0;
+            height: 0;
+            border-left: 200px solid transparent;
+            border-right: 200px solid transparent;
+            border-bottom: 300px solid #42A5F5;
+        }
+
+        .cloud {
+            position: absolute;
+            background: white;
+            border-radius: 50px;
+            opacity: 0.8;
+        }
+
+        .cloud-1 {
+            width: 100px;
+            height: 40px;
+            top: 15%;
+            right: 20%;
+        }
+
+        .cloud-2 {
+            width: 80px;
+            height: 35px;
+            top: 25%;
+            right: 10%;
+        }
+
+        .cloud-3 {
+            width: 120px;
+            height: 45px;
+            top: 10%;
+            left: 15%;
+        }
+
+        .info-card {
+            position: relative;
+            z-index: 10;
+            background: white;
+            padding: 35px;
+            border-radius: 12px;
+            max-width: 420px;
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.1);
+        }
+
+        .info-card h3 {
+            color: #1976D2;
+            margin-bottom: 18px;
+            font-size: 23px;
+        }
+
+        .info-card p {
+            color: #666;
+            line-height: 1.6;
+            margin-bottom: 12px;
+            font-size: 14px;
+        }
+
+        .info-card .highlight {
+            color: #333;
+            font-weight: 600;
+        }
+
+        .info-card ul {
+            color: #666;
+            line-height: 1.8;
+            margin: 15px 0;
+            padding-left: 20px;
+        }
+
+        .info-card ul li {
+            margin-bottom: 6px;
+        }
+
+        @media (max-width: 968px) {
+            .container {
+                flex-direction: column;
+            }
+
+            .right-section {
+                display: none;
+            }
+
+            .left-section {
+                justify-content: flex-start;
+                padding-top: 40px;
+            }
+
+            body {
+                overflow-y: auto;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .left-section {
+                padding: 25px 20px;
+            }
+
+            h2 {
+                font-size: 22px;
+            }
+
+            .signup-content {
+                max-width: 100%;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="left-section">
+            <div class="signup-content">
+                <div class="logo">
+                    <div class="logo-circle">
+                        <div class="logo-icon"></div>
+                    </div>
+                </div>
+                
+                <h2>Create Account</h2>
+                <p class="subtitle">Already have an account? <a href="{% url 'loginpage' %}">Log in</a></p>
+
+                <form class="signup-form" method="POST" action="{% url 'signup' %}">
+                    {% csrf_token %}
+                    
+                    <div class="form-group">
+                        <label for="username">Username</label>
+                        <input type="text" id="username" name="username" placeholder="Enter your username" required>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="phoneno">Phone Number</label>
+                        <input type="text" id="phoneno" name="phoneno" placeholder="Enter 10-digit phone number" required>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="password">Password</label>
+                        <div class="password-group">
+                            <input type="password" id="password" name="password" placeholder="Enter password (min 6 characters)" required>
+                            <span class="toggle-password" onclick="togglePassword('password')">👁️</span>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="conpass">Confirm Password</label>
+                        <div class="password-group">
+                            <input type="password" id="conpass" name="conpass" placeholder="Confirm your password" required>
+                            <span class="toggle-password" onclick="togglePassword('conpass')">👁️</span>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="address">Address (Optional)</label>
+                        <textarea id="address" name="address" placeholder="Enter your address"></textarea>
+                    </div>
+
+                    <button type="submit" class="register-btn">Create Account →</button>
+
+                    <div class="login-footer">
+                        <a href="{% url 'loginpage' %}">← Back to Login</a>
+                    </div>
+                </form>
+
+                <div class="footer">
+                    © 2025 Vinsup Infotech. All Rights Reserved.<br>
+                    <a href="#">Terms of Service</a> | <a href="#">Privacy Policy</a>
+                </div>
+            </div>
+        </div>
+
+        <div class="right-section">
+            <div class="illustration">
+                <div class="cloud cloud-1"></div>
+                <div class="cloud cloud-2"></div>
+                <div class="cloud cloud-3"></div>
+                <div class="mountain-1"></div>
+                <div class="mountain-2"></div>
+                <div class="mountain-3"></div>
+            </div>
+
+            <div class="info-card">
+                <h3>Join Vinsup Infotech</h3>
+                <p><span class="highlight">Create your account today</span> and get access to our powerful platform.</p>
+                <p>Manage your projects, collaborate with your team, and streamline your workflow with our comprehensive tools.</p>
+                <p>Sign up now and experience the difference!</p>
+                <ul>
+                    <li>Project Management</li>
+                    <li>Team Collaboration</li>
+                    <li>Real-time Updates</li>
+                    <li>Secure & Reliable</li>
+                </ul>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Password visibility toggle
+        function togglePassword(inputId) {
+            const passwordInput = document.getElementById(inputId);
+            const toggleBtn = passwordInput.nextElementSibling;
+            
+            if(passwordInput.type === 'password') {
+                passwordInput.type = 'text';
+                toggleBtn.textContent = '🙈';
+            } else {
+                passwordInput.type = 'password';
+                toggleBtn.textContent = '👁️';
+            }
+        }
+
+        // Form validation
+        const signupForm = document.querySelector('.signup-form');
+        if(signupForm) {
+            signupForm.addEventListener('submit', function(e) {
+                const username = document.getElementById('username').value.trim();
+                const phoneNo = document.getElementById('phoneno').value.trim();
+                const password = document.getElementById('password').value;
+                const conpass = document.getElementById('conpass').value;
+
+                // Username validation
+                if (username.length < 3) {
+                    e.preventDefault();
+                    alert('Username must be at least 3 characters');
+                    return false;
+                }
+
+                // Phone validation
+                const phonePattern = /^[0-9]{10}$/;
+                if (!phonePattern.test(phoneNo)) {
+                    e.preventDefault();
+                    alert('Please enter a valid 10-digit phone number');
+                    return false;
+                }
+
+                // Password validation
+                if (password.length < 6) {
+                    e.preventDefault();
+                    alert('Password must be at least 6 characters');
+                    return false;
+                }
+
+                // Password match validation
+                if (password !== conpass) {
+                    e.preventDefault();
+                    alert('Passwords do not match');
+                    return false;
+                }
+
+                // Show loading state
+                const submitBtn = document.querySelector('.register-btn');
+                submitBtn.disabled = true;
+                submitBtn.textContent = 'Creating Account...';
+            });
+        }
+
+        // Allow only numbers in phone number field
+        document.getElementById('phoneno').addEventListener('keypress', function(e) {
+            if (!/[0-9]/.test(e.key)) {
+                e.preventDefault();
+            }
+        });
+    </script>
+</body>
+</html>

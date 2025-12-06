@@ -1,0 +1,485 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Admin Dashboard</title>
+
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; font-family: "Segoe UI", Arial; }
+    body { display: flex; background: #f1f7ff; min-height:100vh; }
+
+    /* Sidebar */
+    .sidebar { width: 240px; height: 100vh; background:  #1e3a8a; color: #fff; padding: 25px 0; position: fixed; top: 0; left: 0; }
+    .sidebar h2 { text-align: center; margin-bottom: 20px; font-size: 22px; letter-spacing: 1px; font-weight: bold; }
+    .menu a { display: block; padding: 14px 25px; color: white; text-decoration: none; font-size: 16px; transition: 0.2s; }
+    .menu a:hover { background: #144f8a; padding-left: 30px; }
+    .sidebar .active {
+      background: #3b82f6;
+      border-left: 4px solid #ffffff;
+    }
+
+    /* Main Content */
+    .main-content { margin-left: 240px; padding: 20px; width: calc(100% - 240px); }
+
+    /* Header */
+    .header { background: white; padding: 18px 25px; border-radius: 10px; display: flex; justify-content: space-between; align-items: center; box-shadow: 0 3px 10px rgba(0,0,0,0.1); margin-bottom: 18px; }
+    .header h2 { color: #0d3b66; font-size: 24px; }
+    .profile { font-size: 17px; font-weight: bold; color: #0d3b66; }
+
+    /* Cards */
+    .cards { display: flex; gap: 20px; margin-bottom: 12px; flex-wrap: wrap; align-items:flex-start; }
+    .card { background: white; width: 22%; min-width: 220px; padding: 18px; border-radius: 12px; text-align: center; box-shadow: 0 3px 10px rgba(0,0,0,0.15); display:flex; flex-direction:column; gap:12px; }
+    .card h3 { font-size: 18px; color: #0d3b66; margin-bottom: 6px; }
+    .card span { font-size: 32px; color: #1a73e8; font-weight: bold; }
+    .card .card-actions { margin-top: auto; display:flex; gap:8px; justify-content:center; }
+    .btn { padding: 8px 12px; border-radius:8px; border:0; cursor:pointer; font-weight:700; font-size:13px; }
+    .btn.primary { background:#0d6efd; color:#fff; text-decoration: none;}
+    .btn.ghost { background:#0d6efd; color:#fff; border:1px solid #e6f0ff; text-decoration: none; }
+
+    /* Charts */
+    .charts { display:flex; gap: 20px; margin-top: 18px; flex-wrap: wrap; align-items:flex-start; }
+    .chart-box { background: white; width: 48%; min-width:320px; padding: 18px; border-radius: 12px; box-shadow: 0 3px 10px rgba(0,0,0,0.15); text-align: center; }
+    .chart-box h3 { color:#0d3b66; margin-bottom: 10px; }
+    .chart-canvas { width:100%; height:320px; display:block; margin:auto; }
+
+    .pie-legend { display:flex; justify-content:center; gap:12px; margin-top:12px; flex-wrap:wrap; }
+    .legend-item { display:flex; gap:8px; align-items:center; font-size:13px; color:#333; }
+    .legend-swatch { width:14px; height:14px; border-radius:3px; }
+
+    /* Responsive */
+    @media (max-width:1100px) {
+      .cards { gap:12px; }
+      .chart-box { width:100%; }
+      .card { width: 48%; }
+      .main-content { padding: 14px; }
+    }
+    @media (max-width:600px) {
+      .card { width: 100%; }
+      .sidebar { position:relative; width:100%; height:auto; display:flex; gap:10px; padding:12px; }
+      body { flex-direction:column; }
+      .main-content { margin-left:0; width:100%; padding:12px; }
+    }
+    .profile-icon {
+      width: 45px;
+      height: 45px;
+      border-radius: 50%;
+      overflow: hidden;
+      cursor: pointer;
+      border: 2px solid #3b82f6;
+    }
+    .profile-icon img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+    }
+    .profile-popup {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: rgba(0,0,0,0.5);
+      display: none;
+      justify-content: center;
+      align-items: center;
+      z-index: 100;
+    }
+
+    .profile-card {
+      background: white;
+      width: 320px;
+      padding: 20px;
+      border-radius: 15px;
+      text-align: center;
+      position: relative;
+      box-shadow: 0 3px 10px rgba(0,0,0,0.3);
+    }
+
+    .close-btn {
+      position: absolute;
+      top: 8px;
+      right: 15px;
+      cursor: pointer;
+      font-size: 22px;
+      font-weight: bold;
+    }
+
+    .profile-card img {
+      width: 110px;
+      height: 110px;
+      border-radius: 50%;
+      border: 3px solid #3b82f6;
+      margin-bottom: 10px;
+      object-fit: cover;
+    }
+
+    .logout-btn {
+      background: #ef4444;
+      color: white;
+      border: none;
+      padding: 10px 20px;
+      border-radius: 8px;
+      font-size: 16px;
+      margin-top: 15px;
+      cursor: pointer;
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Sidebar -->
+  <div class="sidebar" role="navigation" aria-label="Main sidebar">
+    <h2>PANCHAYAT</h2>
+    <div class="menu">
+       <a href="{% url 'Mainpageadmin' %}" class="active">🏠 Dashboard</a>
+      <a href="{% url 'Posts' %}">📌 Posts</a>
+      <a href="{% url 'Add_supervisor' %}">👨‍💼 Add Supervisor</a>
+      <a href="{% url 'Add_eo' %}">🧑‍💼 Add EO</a>
+      <a href="{% url 'Tasks' %}">🗂️ Tasks</a>
+      <a href="{% url 'achievment' %}">🏆 Achievements</a>
+      <a href="{% url 'Add_area' %}">📍 Add Area</a>
+    </div>
+  </div>
+
+  <!-- Main Content -->
+  <div class="main-content">
+    <!-- Header -->
+    <div class="header" role="banner">
+      <h2>Dashboard</h2>
+      <div class="profile-icon" id="profileTrigger">
+      <img src="https://via.placeholder.com/50">
+    </div>
+    </div>
+
+    <!-- Dashboard Cards -->
+    <div class="cards" role="region" aria-label="Summary cards">
+      <div class="card" aria-labelledby="c1">
+        <h3 id="c1">No. of Complaints</h3>
+        <span>{{ total_complaints }}</span>
+        <div class="card-actions">
+          <a href="{% url 'Tasks' %}" class="btn ghost">View</a>
+        </div>
+      </div>
+
+      <div class="card" aria-labelledby="c2">
+        <h3 id="c2">No. of Requests</h3>
+        <span>{{ total_requests }}</span>
+        <div class="card-actions">
+          <a href="{% url 'Tasks' %}" class="btn ghost">View</a>
+        </div>
+      </div>
+
+      <div class="card" aria-labelledby="c3">
+        <h3 id="c3">No. of Supervisors</h3>
+        <span>{{ total_supervisors }}</span>
+        <div class="card-actions">
+          <a href="{% url 'Add_supervisor' %}" class="btn primary"> Add Supervisor</a>
+        </div>
+      </div>
+
+      <div class="card" aria-labelledby="c4">
+        <h3 id="c4">No. of EO</h3>
+        <span>{{ total_eo }}</span>
+        <div class="card-actions">
+          <a href="{% url 'Add_eo' %}" class="btn primary"> Add EO</a>
+        </div>
+      </div>
+    
+    <div class="card" aria-labelledby="c4">
+        <h3 id="c4">No. Of Posts</h3>
+        <span>{{ total_posts }}</span>
+        <div class="card-actions">
+          <a href="{% url 'Posts' %}" class="btn primary"> Add Posts</a>
+        </div>
+      </div>
+   
+</div>
+    <!-- Charts -->
+    <div class="charts" role="region" aria-label="Charts section">
+      <!-- Pie -->
+      <div class="chart-box" aria-labelledby="pieTitle">
+        <h3 id="pieTitle">Complaints vs Requests</h3>
+        <canvas id="pieCanvas" class="chart-canvas" aria-label="Pie chart"></canvas>
+        <div class="pie-legend" id="pieLegend"></div>
+      </div>
+
+      <!-- Bar -->
+      <div class="chart-box" aria-labelledby="barTitle">
+        <h3 id="barTitle">Summary Graph</h3>
+        <canvas id="barCanvas" class="chart-canvas" aria-label="Bar chart"></canvas>
+      </div>
+    </div>
+
+  </div>
+  <!-- ---------------- PROFILE POPUP ---------------- -->
+<div class="profile-popup" id="profilePopup">
+  <div class="profile-card">
+    <span class="close-btn" id="closePopup">&times;</span>
+
+    {% if user.profile_image %}
+      <img src="{{ user.profile_image.url }}">
+    {% else %}
+      <img src="https://via.placeholder.com/110">
+    {% endif %}
+
+    <h3>{{admin_username}}</h3>
+    <!-- <p>📞 {{admin_username }}</p>
+    <p>🏠 {{ user.address }}</p> -->
+
+    <a href="{% url 'logout2' %}">
+      <button class="logout-btn">Logout</button>
+    </a>
+  </div>
+</div>
+
+<script>
+/* ======= helpers to size canvas crisply ======= */
+function setupCanvas(canvas) {
+  const dpr = window.devicePixelRatio || 1;
+  // set display size from CSS
+  const rect = canvas.getBoundingClientRect();
+  canvas.width = Math.round(rect.width * dpr);
+  canvas.height = Math.round(rect.height * dpr);
+  const ctx = canvas.getContext('2d');
+  ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+  return ctx;
+}
+
+/* ======= data from Django context (ensure integers) ======= */
+const complaints = Number({{ total_complaints|default:0 }});
+const requests = Number({{ total_requests|default:0 }});
+const supervisors = Number({{ total_supervisors|default:0 }});
+const eo = Number({{ total_eo|default:0 }});
+
+/* ======= PIE CHART draw ======= */
+(function drawPie() {
+  const canvas = document.getElementById('pieCanvas');
+  const ctx = setupCanvas(canvas);
+  ctx.clearRect(0,0,canvas.width,canvas.height);
+
+  const padding = 20;
+  const w = canvas.clientWidth;
+  const h = canvas.clientHeight;
+  const cx = w / 2;
+  const cy = h / 2 - 10;
+  const radius = Math.min(w, h) / 2 - padding - 10;
+
+  const data = [
+    {label: 'Complaints', value: complaints, color: '#0d3b66'},
+    {label: 'Requests', value: requests, color: '#1a73e8'}
+  ];
+
+  const total = data.reduce((s,d) => s + Math.max(0, d.value), 0);
+
+  if (total === 0) {
+    ctx.fillStyle = '#7a9bd6';
+    ctx.font = '14px Arial';
+    ctx.textAlign = 'center';
+    ctx.fillText('No data', cx, cy);
+    document.getElementById('pieLegend').innerHTML = '';
+    return;
+  }
+
+  // draw slices
+  let angle = -Math.PI/2; // start top
+  const legendEl = document.getElementById('pieLegend');
+  legendEl.innerHTML = '';
+  data.forEach((d) => {
+    const slice = (d.value / total) * Math.PI * 2;
+    const start = angle;
+    const end = angle + slice;
+
+    ctx.beginPath();
+    ctx.moveTo(cx, cy);
+    ctx.arc(cx, cy, radius, start, end);
+    ctx.closePath();
+    ctx.fillStyle = d.color;
+    ctx.fill();
+    ctx.strokeStyle = '#fff';
+    ctx.lineWidth = 1;
+    ctx.stroke();
+
+    // create legend item
+    const pct = Math.round((d.value / total) * 100);
+    const item = document.createElement('div');
+    item.className = 'legend-item';
+    item.innerHTML = `<span class="legend-swatch" style="background:${d.color}"></span><span>${d.label} — ${d.value} (${pct}%)</span>`;
+    legendEl.appendChild(item);
+
+    angle += slice;
+  });
+
+  // small donut hole for style
+  ctx.beginPath();
+  ctx.fillStyle = '#fff';
+  ctx.arc(cx, cy, radius * 0.45, 0, Math.PI*2);
+  ctx.fill();
+
+})();
+
+/* ======= BAR CHART draw ======= */
+(function drawBar() {
+  const canvas = document.getElementById('barCanvas');
+  const ctx = setupCanvas(canvas);
+  ctx.clearRect(0,0,canvas.width,canvas.height);
+
+  const padding = {top:20, right:20, bottom:50, left:40};
+  const cw = canvas.clientWidth;
+  const ch = canvas.clientHeight;
+  const plotW = cw - padding.left - padding.right;
+  const plotH = ch - padding.top - padding.bottom;
+
+  // data series (labels + values)
+  const bars = [
+    {label: 'Complaints', value: complaints, color: '#0d3b66'},
+    {label: 'Requests', value: requests, color: '#1a73e8'},
+    {label: 'Supervisors', value: supervisors, color: '#144f8a'},
+    {label: 'EO', value: eo, color: '#57a0ff'}
+  ];
+
+  const maxVal = Math.max(...bars.map(b=>b.value), 1);
+  const barGap = 18;
+  const barWidth = (plotW - (bars.length - 1) * barGap) / bars.length;
+
+  // axis
+  ctx.strokeStyle = '#e6eefc';
+  ctx.lineWidth = 1;
+  ctx.beginPath();
+  ctx.moveTo(padding.left, padding.top + plotH);
+  ctx.lineTo(padding.left + plotW, padding.top + plotH);
+  ctx.stroke();
+
+  // grid lines and values (nice steps)
+  const steps = 4;
+  ctx.strokeStyle = '#f0f6ff';
+  ctx.fillStyle = '#6b778a';
+  ctx.font = '12px Arial';
+  ctx.textAlign = 'right';
+
+  for (let i=0; i<=steps; i++) {
+    const y = padding.top + plotH - (i/steps)*plotH;
+    const val = Math.round((i/steps) * maxVal);
+    ctx.beginPath();
+    ctx.moveTo(padding.left, y);
+    ctx.lineTo(padding.left + plotW, y);
+    ctx.stroke();
+    ctx.fillText(val.toString(), padding.left - 6, y + 4);
+  }
+
+  // bars
+  bars.forEach((b, i) => {
+    const x = padding.left + i * (barWidth + barGap);
+    const h = (b.value / maxVal) * plotH;
+    const y = padding.top + plotH - h;
+
+    // bar
+    ctx.fillStyle = b.color;
+    roundRect(ctx, x, y, barWidth, h, 6, true, false);
+
+    // label
+    ctx.fillStyle = '#23445c';
+    ctx.font = '13px Arial';
+    ctx.textAlign = 'center';
+    ctx.fillText(b.label, x + barWidth/2, padding.top + plotH + 20);
+
+    // value on top of bar (if non-zero)
+    if (b.value > 0) {
+      ctx.fillStyle = '#08304b';
+      ctx.font = '12px Arial';
+      ctx.textAlign = 'center';
+      ctx.fillText(b.value.toString(), x + barWidth/2, y - 8);
+    }
+  });
+
+  // utility: rounded rectangle
+  function roundRect(ctx, x, y, w, h, r, fill, stroke) {
+    if (w < 2 * r) r = w / 2;
+    if (h < 2 * r) r = h / 2;
+    ctx.beginPath();
+    ctx.moveTo(x + r, y);
+    ctx.arcTo(x + w, y, x + w, y + h, r);
+    ctx.arcTo(x + w, y + h, x, y + h, r);
+    ctx.arcTo(x, y + h, x, y, r);
+    ctx.arcTo(x, y, x + w, y, r);
+    ctx.closePath();
+    if (fill) ctx.fill();
+    if (stroke) ctx.stroke();
+  }
+
+})();
+
+/* ======= redraw on resize ======= */
+let resizeTimer;
+window.addEventListener('resize', ()=> {
+  clearTimeout(resizeTimer);
+  resizeTimer = setTimeout(()=> {
+    // redraw charts
+    // run the draw functions again by calling them (re-run entire IIFEs)
+    // easiest: reload page scripts - here we call by re-invoking functions
+    // For simplicity just reload the page's script section by re-creating them:
+    // (call same IIFEs again)
+    (function(){ /* re-run pie */ 
+      const canvas = document.getElementById('pieCanvas');
+      const ctx = setupCanvas(canvas);
+      ctx.clearRect(0,0,canvas.width,canvas.height);
+      const padding = 20;
+      const w = canvas.clientWidth; const h = canvas.clientHeight;
+      const cx = w/2; const cy = h/2 - 10; const radius = Math.min(w,h)/2 - padding - 10;
+      const data = [
+        {label:'Complaints', value:complaints, color:'#0d3b66'},
+        {label:'Requests', value:requests, color:'#1a73e8'}
+      ];
+      const total = data.reduce((s,d)=>s+Math.max(0,d.value),0);
+      const legendEl = document.getElementById('pieLegend'); legendEl.innerHTML = '';
+      if(total===0){ ctx.fillStyle='#7a9bd6'; ctx.font='14px Arial'; ctx.textAlign='center'; ctx.fillText('No data', cx, cy); return; }
+      let angle = -Math.PI/2;
+      data.forEach(d=>{ const slice=(d.value/total)*Math.PI*2; const start=angle; const end=angle+slice; ctx.beginPath(); ctx.moveTo(cx,cy); ctx.arc(cx,cy,radius,start,end); ctx.closePath(); ctx.fillStyle=d.color; ctx.fill(); ctx.strokeStyle='#fff'; ctx.lineWidth=1; ctx.stroke(); const pct=Math.round((d.value/total)*100); const item=document.createElement('div'); item.className='legend-item'; item.innerHTML=`<span class="legend-swatch" style="background:${d.color}"></span><span>${d.label} — ${d.value} (${pct}%)</span>`; legendEl.appendChild(item); angle+=slice; });
+      ctx.beginPath(); ctx.fillStyle='#fff'; ctx.arc(cx,cy,radius*0.45,0,Math.PI*2); ctx.fill();
+    })();
+
+    (function(){ /* re-run bar */ 
+      const canvas = document.getElementById('barCanvas');
+      const ctx = setupCanvas(canvas);
+      ctx.clearRect(0,0,canvas.width,canvas.height);
+      const padding = {top:20, right:20, bottom:50, left:40};
+      const cw = canvas.clientWidth; const ch = canvas.clientHeight;
+      const plotW = cw - padding.left - padding.right; const plotH = ch - padding.top - padding.bottom;
+      const bars = [
+        {label:'Complaints', value:complaints, color:'#0d3b66'},
+        {label:'Requests', value:requests, color:'#1a73e8'},
+        {label:'Supervisors', value:supervisors, color:'#144f8a'},
+        {label:'EO', value:eo, color:'#57a0ff'}
+      ];
+      const maxVal = Math.max(...bars.map(b=>b.value), 1);
+      const barGap = 18;
+      const barWidth = (plotW - (bars.length - 1) * barGap) / bars.length;
+      ctx.strokeStyle = '#e6eefc'; ctx.lineWidth = 1;
+      ctx.beginPath(); ctx.moveTo(padding.left, padding.top + plotH); ctx.lineTo(padding.left + plotW, padding.top + plotH); ctx.stroke();
+      const steps = 4; ctx.strokeStyle='#f0f6ff'; ctx.fillStyle='#6b778a'; ctx.font='12px Arial'; ctx.textAlign='right';
+      for(let i=0;i<=steps;i++){ const y = padding.top + plotH - (i/steps)*plotH; const val = Math.round((i/steps)*maxVal); ctx.beginPath(); ctx.moveTo(padding.left, y); ctx.lineTo(padding.left + plotW, y); ctx.stroke(); ctx.fillText(val.toString(), padding.left - 6, y + 4); }
+      bars.forEach((b,i)=>{ const x = padding.left + i*(barWidth + barGap); const h = (b.value / maxVal) * plotH; const y = padding.top + plotH - h; ctx.fillStyle = b.color; roundRect(ctx, x, y, barWidth, h, 6, true, false); ctx.fillStyle = '#23445c'; ctx.font='13px Arial'; ctx.textAlign='center'; ctx.fillText(b.label, x + barWidth/2, padding.top + plotH + 20); if(b.value>0){ ctx.fillStyle='#08304b'; ctx.font='12px Arial'; ctx.textAlign='center'; ctx.fillText(b.value.toString(), x + barWidth/2, y - 8); }} );
+      function roundRect(ctx,x,y,w,h,r,fill,stroke){ if(w<2*r) r=w/2; if(h<2*r) r=h/2; ctx.beginPath(); ctx.moveTo(x+r,y); ctx.arcTo(x+w,y,x+w,y+h,r); ctx.arcTo(x+w,y+h,x,y+h,r); ctx.arcTo(x,y+h,x,y,r); ctx.arcTo(x,y,x+w,y,r); ctx.closePath(); if(fill) ctx.fill(); if(stroke) ctx.stroke(); }
+    })();
+
+  }, 150);
+});
+
+ /* -------- PROFILE POPUP -------- */
+  const profileTrigger = document.getElementById("profileTrigger");
+  const profilePopup = document.getElementById("profilePopup");
+  const closePopup = document.getElementById("closePopup");
+
+  profileTrigger.onclick = () => profilePopup.style.display = "flex";
+  closePopup.onclick = () => profilePopup.style.display = "none";
+  
+  // Close popup when clicking outside
+  profilePopup.onclick = (e) => {
+    if (e.target === profilePopup) {
+      profilePopup.style.display = "none";
+    }
+  };
+</script>
+
+</body>
+</html>

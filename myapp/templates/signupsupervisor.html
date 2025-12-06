@@ -1,0 +1,162 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Signup Page</title>
+  <style>
+    :root {
+     --bg:#f7d2eb;
+      --accent: #500438;
+      --header1: #f7d2eb;
+      --header2: #ac438b;
+      --header3: #4b0936;
+    }
+    * { box-sizing: border-box; }
+    body {
+      margin: 0;
+      font-family: Arial, sans-serif;
+      background-color: var(--bg);
+    }
+    .signup-page {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+    }
+    .signup-card {
+        margin-top: 10%;
+      background-color: white;
+      width: 400px;
+      border-radius: 20px;
+      overflow: hidden;
+      box-shadow: 0 5px 20px rgba(0,0,0,0.1);
+    }
+    .signup-header {
+      position: relative;
+      height: 150px;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      text-align: center;
+      color: white;
+      font-weight: bold;
+    }
+    .wave {
+      position: absolute;
+      width: 100%;
+      height: 100%;
+      border-radius: 50%;
+    }
+    .wave1 { background-color: var(--header1); top: -50px; left: -50px; }
+    .wave2 { background-color: var(--header2); top: -30px; left: 50px; }
+    .wave3 { background-color: var(--header3); top: 20px; left: 80px; }
+    .signup-header h2 { position: relative; z-index: 1; }
+    .signup-form {
+      display: flex;
+      flex-direction: column;
+      padding: 20px;
+    }
+    .signup-form input, .signup-form textarea {
+      margin-top: 10px;
+      padding: 10px;
+      font-size: 1em;
+      border-radius: 8px;
+      border: 1px solid #aaa;
+      outline: none;
+      font-family: Arial, sans-serif;
+    }
+    .signup-form textarea {
+      height: 100px;
+      resize: vertical;
+      background-color: #f7d2eb;
+      color: var(--accent);
+      border: 2px solid var(--accent);
+      box-shadow: 2px 2px 5px rgba(0,0,0,0.1);
+    }
+    .verify-btn, .register-btn {
+      margin-top: 20px;
+      padding: 12px;
+      background-color: var(--accent);
+      color: white;
+      border: none;
+      border-radius: 50px;
+      cursor: pointer;
+      font-weight: bold;
+      transition: 0.3s;
+    }
+    .verify-btn:hover, .register-btn:hover { background-color: #5a4bcf; }
+    .otp-section {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      margin-top: 15px;
+    }
+    .otp-boxes {
+      display: flex;
+      justify-content: center;
+      gap: 10px;
+      margin-top: 10px;
+    }
+    .otp-boxes input {
+      width: 40px;
+      height: 40px;
+      font-size: 18px;
+      text-align: center;
+      border: 1px solid var(--accent);
+      border-radius: 8px;
+    }
+    .login-footer {
+      display: flex;
+      justify-content: center;
+      padding: 10px 20px 20px 20px;
+    }
+    .login-footer a {
+      text-decoration: none;
+      color: var(--accent);
+      font-weight: bold;
+    }
+    .login-footer a:hover { text-decoration: underline; }
+  </style>
+</head>
+<body>
+
+<div class="signup-page">
+  <div class="signup-card">
+    <div class="signup-header">
+      <div class="wave wave1"></div>
+      <div class="wave wave2"></div>
+      <div class="wave wave3"></div>
+      <h2>Welcome Back Sign Up</h2>
+    </div>
+
+    <!-- Django form submission -->
+    <form class="signup-form" method="POST" action="{% url 'signup' %}">
+      {% csrf_token %}
+      <input type="text" name="username" placeholder="Username" required>
+      <input type="text" name="phoneno" placeholder="Phone Number" required>
+      <input type="password" name="password" placeholder="Password" required>
+      <input type="password" name="conpass" placeholder="Confirm Password" required>
+      <textarea name="address" placeholder="Address"></textarea>
+
+      <div class="otp-section">
+        <button type="button" class="verify-btn">Verify OTP</button>
+        <div class="otp-boxes">
+          <input type="text" maxlength="1">
+          <input type="text" maxlength="1">
+          <input type="text" maxlength="1">
+          <input type="text" maxlength="1">
+        </div>
+      </div>
+
+      <button type="submit" class="register-btn">Register</button>
+    </form>
+
+    <div class="login-footer">
+      <a href="{% url 'loginpage3' %}">Back to Login</a>
+    </div>
+  </div>
+</div>
+
+</body>
+</html>

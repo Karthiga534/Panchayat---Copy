@@ -1,0 +1,149 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Notifications</title>
+  <style>
+    :root {
+      --bg: #b1e3f1; 
+      --accent: #075c74;
+      --header1: #b1e3f1;
+      --header2: #2a86a0;
+      --header3: #034355;
+    }
+
+    * {
+      box-sizing: border-box;
+      font-family: Arial, sans-serif;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      background-color: var(--bg);
+      padding: 20px;
+    }
+
+    h1 {
+      text-align: center;
+      color: var(--header3);
+      margin-bottom: 20px;
+    }
+
+    .notifications-container {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+      gap: 20px;
+    }
+
+    .notification-card {
+      background-color: white;
+      border-left: 6px solid var(--header2);
+      border-radius: 10px;
+      padding: 15px;
+      box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+      display: flex;
+      flex-direction: column;
+      position: relative;
+      transition: transform 0.2s ease;
+    }
+
+    .notification-card:hover {
+      transform: translateY(-3px);
+    }
+
+    .delete-btn {
+      position: absolute;
+      top: 10px;
+      right: 10px;
+      background: transparent;
+      border: none;
+      cursor: pointer;
+      font-size: 18px;
+      color: var(--accent);
+    }
+
+    .title {
+      font-weight: bold;
+      color: var(--header3);
+      margin-bottom: 8px;
+      font-size: 1.1rem;
+    }
+
+    .message {
+      margin-bottom: 8px;
+      color: #333;
+    }
+
+    .date-time {
+      font-size: 0.9rem;
+      color: #555;
+      margin-bottom: 8px;
+    }
+
+    .media {
+      margin-top: 10px;
+      max-height: 180px;
+      overflow: hidden;
+    }
+
+    .media img, .media video {
+      width: 20%;          /* take full width of the card */
+    height: 100%;          /* scale height to 50% of the card container */
+    object-fit: cover;    /* crop proportionally if necessary */
+    border-radius: 8px;
+    }
+  </style>
+</head>
+<body>
+
+  <h1>📢 Notifications</h1>
+
+  {% if messages %}
+  <div>
+    {% for message in messages %}
+      <p style="text-align:center; color: green; font-weight: bold;">{{ message }}</p>
+    {% endfor %}
+  </div>
+  {% endif %}
+
+  <div class="notifications-container">
+    {% for post in posts %}
+    <div class="notification-card" id="post-{{ post.id }}">
+      <button class="delete-btn" onclick="confirmDelete('{{ post.id }}')">🗑️</button>
+      
+      <div class="title">{{ post.title }}</div>
+      <div class="message">{{ post.message }}</div>
+      <div class="date-time">{{ post.created_at }}</div>
+
+      {% if post.image %}
+      <div class="media">
+        <img src="{{ post.image.url }}" alt="Image">
+      </div>
+      {% endif %}
+
+      {% if post.video %}
+      <div class="media">
+        <video controls>
+          <source src="{{ post.video.url }}" type="video/mp4">
+        </video>
+      </div>
+      {% endif %}
+    </div>
+    {% empty %}
+      <p style="grid-column: 1 / -1; text-align:center;">No notifications found.</p>
+    {% endfor %}
+  </div>
+
+  <script>
+    function confirmDelete(postId) {
+      const confirmed = confirm("Are you sure you want to delete this notification?");
+      if (confirmed) {
+        window.location.href = `notificationsadmin/delete3/${postId}/`;
+      }
+    }
+  </script>
+
+</body>
+</html>

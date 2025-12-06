@@ -1,0 +1,535 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Vinsup Infotech - Welcome</title>
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      background: linear-gradient(135deg, #1e88e5 0%, #1565c0 100%);
+      min-height: 100vh;
+      position: relative;
+      overflow-x: hidden;
+    }
+
+    /* Animated Background Elements */
+    .bg-decoration {
+      position: absolute;
+      border-radius: 50%;
+      opacity: 0.1;
+      animation: float 20s infinite ease-in-out;
+    }
+
+    .decoration-1 {
+      width: 300px;
+      height: 300px;
+      background: white;
+      top: -100px;
+      right: -100px;
+      animation-delay: 0s;
+    }
+
+    .decoration-2 {
+      width: 200px;
+      height: 200px;
+      background: white;
+      bottom: 50px;
+      left: -50px;
+      animation-delay: 5s;
+    }
+
+    .decoration-3 {
+      width: 150px;
+      height: 150px;
+      background: white;
+      top: 50%;
+      right: 10%;
+      animation-delay: 10s;
+    }
+
+    @keyframes float {
+      0%, 100% { transform: translateY(0) rotate(0deg); }
+      50% { transform: translateY(-30px) rotate(180deg); }
+    }
+
+    /* Header */
+    .header {
+      background: rgba(255, 255, 255, 0.15);
+      backdrop-filter: blur(10px);
+      padding: 20px 40px;
+      display: flex;
+      align-items: center;
+      box-shadow: 0 4px 30px rgba(0, 0, 0, 0.1);
+      position: relative;
+      z-index: 10;
+    }
+
+    .logo {
+      display: flex;
+      align-items: center;
+      gap: 15px;
+    }
+
+    .logo-image {
+      width: 55px;
+      height: 55px;
+      border-radius: 50%;
+      object-fit: cover;
+      background: white;
+      padding: 3px;
+      box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+      transition: transform 0.3s;
+    }
+
+    .logo-image:hover {
+      transform: scale(1.1) rotate(5deg);
+    }
+
+    .logo-text {
+      color: white;
+      font-size: 28px;
+      font-weight: bold;
+      text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.2);
+    }
+
+    /* Main Container */
+    .container {
+      max-width: 1400px;
+      margin: 60px auto;
+      padding: 0 30px;
+      position: relative;
+      z-index: 5;
+    }
+
+    /* Content Card - ENLARGED */
+    .content-card {
+      background: rgba(255, 255, 255, 0.95);
+      border-radius: 30px;
+      box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+      display: flex;
+      align-items: center;
+      padding: 70px 80px;
+      gap: 80px;
+      min-height: 650px;
+      backdrop-filter: blur(10px);
+      border: 1px solid rgba(255, 255, 255, 0.3);
+      transition: transform 0.3s, box-shadow 0.3s;
+      animation: slideIn 0.8s ease-out;
+    }
+
+    .content-card:hover {
+      transform: translateY(-10px);
+      box-shadow: 0 25px 80px rgba(0, 0, 0, 0.4);
+    }
+
+    @keyframes slideIn {
+      from {
+        opacity: 0;
+        transform: translateY(50px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    /* Left Section */
+    .left-section {
+      flex: 1;
+    }
+
+    .welcome-section {
+      margin-bottom: 45px;
+    }
+
+    .welcome-section h1 {
+      background: linear-gradient(135deg, #1e88e5 0%, #1565c0 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+      font-size: 48px;
+      margin-bottom: 15px;
+      font-weight: 800;
+      animation: fadeInDown 1s ease-out;
+    }
+
+    @keyframes fadeInDown {
+      from {
+        opacity: 0;
+        transform: translateY(-20px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    .welcome-section h2 {
+      color: #1976d2;
+      font-size: 32px;
+      margin-bottom: 25px;
+      font-weight: 600;
+    }
+
+    .welcome-section p {
+      color: #4a5568;
+      font-size: 17px;
+      line-height: 1.8;
+      margin-bottom: 15px;
+    }
+
+    /* Action Section */
+    .action-section {
+      margin-top: 40px;
+    }
+
+    .public-btn {
+      width: 100%;
+      padding: 18px;
+      background: linear-gradient(135deg, #1e88e5 0%, #1565c0 100%);
+      color: white;
+      border: none;
+      border-radius: 30px;
+      font-size: 18px;
+      font-weight: bold;
+      cursor: pointer;
+      margin-bottom: 25px;
+      transition: all 0.3s;
+      box-shadow: 0 8px 25px rgba(30, 136, 229, 0.4);
+      position: relative;
+      overflow: hidden;
+    }
+
+    .public-btn::before {
+      content: '';
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      width: 0;
+      height: 0;
+      border-radius: 50%;
+      background: rgba(255, 255, 255, 0.3);
+      transform: translate(-50%, -50%);
+      transition: width 0.6s, height 0.6s;
+    }
+
+    .public-btn:hover::before {
+      width: 400px;
+      height: 400px;
+    }
+
+    .public-btn:hover {
+      transform: translateY(-3px);
+      box-shadow: 0 12px 35px rgba(30, 136, 229, 0.6);
+    }
+
+    .public-btn span {
+      position: relative;
+      z-index: 1;
+    }
+
+    .divider {
+      display: flex;
+      align-items: center;
+      margin: 30px 0;
+      color: #718096;
+    }
+
+    .divider::before,
+    .divider::after {
+      content: '';
+      flex: 1;
+      height: 2px;
+      background: linear-gradient(to right, transparent, #cbd5e0, transparent);
+    }
+
+    .divider span {
+      padding: 0 20px;
+      font-size: 16px;
+      font-weight: 600;
+    }
+
+    .role-selection {
+      margin-top: 25px;
+    }
+
+    .role-selection label {
+      display: block;
+      color: #2d3748;
+      font-weight: bold;
+      margin-bottom: 15px;
+      font-size: 17px;
+    }
+
+    .input-group {
+      display: flex;
+      gap: 15px;
+      align-items: center;
+    }
+
+    .role-select {
+      flex: 1;
+      padding: 16px 20px;
+      border: 3px solid #1e88e5;
+      border-radius: 30px;
+      font-size: 16px;
+      color: #2d3748;
+      background: white;
+      cursor: pointer;
+      outline: none;
+      transition: all 0.3s;
+      box-shadow: 0 4px 15px rgba(30, 136, 229, 0.2);
+    }
+
+    .role-select:focus {
+      border-color: #1565c0;
+      box-shadow: 0 6px 20px rgba(21, 101, 192, 0.3);
+    }
+
+    .go-btn {
+      padding: 16px 40px;
+      background: linear-gradient(135deg, #1e88e5 0%, #1565c0 100%);
+      color: white;
+      border: none;
+      border-radius: 30px;
+      font-size: 16px;
+      font-weight: bold;
+      cursor: pointer;
+      transition: all 0.3s;
+      box-shadow: 0 6px 20px rgba(30, 136, 229, 0.4);
+    }
+
+    .go-btn:hover {
+      transform: translateY(-3px);
+      box-shadow: 0 10px 30px rgba(21, 101, 192, 0.5);
+    }
+
+    /* Right Section */
+    .right-section {
+      flex: 1;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      position: relative;
+    }
+
+    .image-wrapper {
+      position: relative;
+      animation: fadeIn 1.2s ease-out;
+    }
+
+    @keyframes fadeIn {
+      from {
+        opacity: 0;
+        transform: scale(0.9);
+      }
+      to {
+        opacity: 1;
+        transform: scale(1);
+      }
+    }
+
+    .main-image {
+      width: 100%;
+      max-width: 550px;
+      height: auto;
+      border-radius: 30px;
+      box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+      transition: transform 0.3s;
+    }
+
+    .main-image:hover {
+      transform: scale(1.05);
+    }
+
+    .image-glow {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      width: 120%;
+      height: 120%;
+      background: radial-gradient(circle, rgba(30, 136, 229, 0.3), transparent);
+      border-radius: 50%;
+      z-index: -1;
+      animation: pulse 3s infinite;
+    }
+
+    @keyframes pulse {
+      0%, 100% { opacity: 0.5; transform: translate(-50%, -50%) scale(1); }
+      50% { opacity: 0.8; transform: translate(-50%, -50%) scale(1.1); }
+    }
+
+    /* Responsive */
+    @media (max-width: 1200px) {
+      .content-card {
+        padding: 60px;
+        gap: 60px;
+      }
+    }
+
+    @media (max-width: 900px) {
+      .content-card {
+        flex-direction: column-reverse;
+        padding: 50px;
+        gap: 40px;
+        min-height: auto;
+      }
+
+      .right-section {
+        width: 100%;
+      }
+
+      .main-image {
+        max-width: 100%;
+      }
+
+      .welcome-section h1 {
+        font-size: 38px;
+      }
+
+      .welcome-section h2 {
+        font-size: 28px;
+      }
+    }
+
+    @media (max-width: 600px) {
+      .container {
+        margin: 30px auto;
+        padding: 0 15px;
+      }
+
+      .content-card {
+        padding: 35px;
+      }
+
+      .header {
+        padding: 15px 20px;
+      }
+
+      .logo-text {
+        font-size: 22px;
+      }
+
+      .welcome-section h1 {
+        font-size: 32px;
+      }
+
+      .welcome-section h2 {
+        font-size: 24px;
+      }
+
+      .welcome-section p {
+        font-size: 15px;
+      }
+
+      .input-group {
+        flex-direction: column;
+      }
+
+      .go-btn {
+        width: 100%;
+      }
+    }
+  </style>
+</head>
+<body>
+  <!-- Background Decorations -->
+  <div class="bg-decoration decoration-1"></div>
+  <div class="bg-decoration decoration-2"></div>
+  <div class="bg-decoration decoration-3"></div>
+
+  <!-- Header -->
+  <div class="header">
+    <div class="logo">
+      <img src="{% static 'images/vinsuplogo3.jpg' %}" alt="Vinsup Logo" class="logo-image">
+      <div class="logo-text">VINSUP</div>
+    </div>
+  </div>
+
+  <!-- Main Container -->
+  <div class="container">
+    <div class="content-card">
+      <!-- Left Section: Welcome & Buttons -->
+      <div class="left-section">
+        <!-- Welcome Section -->
+        <div class="welcome-section">
+          <h1>Welcome to Panchayat Project</h1>
+          <h2>Tenkasi Town Panchayat App</h2>
+          <p>
+            A comprehensive digital solution for managing town panchayat operations, citizen services, 
+            and administrative workflows efficiently.
+          </p>
+          <p>
+            This application streamlines panchayat management, enhances transparency, and provides 
+            easy access to essential services for citizens and officials alike.
+          </p>
+        </div>
+
+        <!-- Action Section -->
+        <div class="action-section">
+          <button class="public-btn" onclick="goToPublic()">
+            <span>Public App</span>
+          </button>
+
+          <div class="divider">
+            <span>OR</span>
+          </div>
+
+          <div class="role-selection">
+            <label for="role-select">Select Your Role:</label>
+            <div class="input-group">
+              <select id="role-select" class="role-select">
+                <option value="">-- Choose Role --</option>
+                <option value="admin">Admin</option>
+                <option value="supervisor">Supervisor</option>
+                <option value="eo">EO</option>
+              </select>
+              <button class="go-btn" onclick="goToRole()">Go</button>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Right Section: Image -->
+      <div class="right-section">
+        <div class="image-wrapper">
+          <div class="image-glow"></div>
+          <img src="{% static 'images/panchayatimg.jpg' %}" alt="Tenkasi Town Panchayat" class="main-image">
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    function goToPublic() {
+      window.location.href = "{% url 'loginpage' %}";
+    }
+
+    function goToRole() {
+      const role = document.getElementById("role-select").value;
+      
+      if (!role) {
+        alert("Please select a role!");
+        return;
+      }
+
+      if (role === "admin") {
+        window.location.href = "{% url 'loginpage2' %}";
+      } else if (role === "supervisor") {
+        window.location.href = "{% url 'loginpage3' %}";
+      } else if (role === "eo") {
+        window.location.href = "{% url 'login4' %}";
+      }
+    }
+  </script>
+</body>
+</html>

@@ -1,0 +1,533 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Requests Status</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: #ffffff;
+            min-height: 100vh;
+        }
+
+        .sidebar {
+            width: 240px;
+            background: #1e3a8a;
+            color: white;
+            padding-top: 30px;
+            display: flex;
+            flex-direction: column;
+            position: fixed;
+            left: 0;
+            top: 0;
+            bottom: 0;
+            box-shadow: 2px 0 10px rgba(0,0,0,0.1);
+        }
+
+        .sidebar h2 {
+            text-align: center;
+            margin-bottom: 25px;
+            font-size: 22px;
+            font-weight: bold;
+        }
+
+        .sidebar a {
+            display: block;
+            padding: 14px 25px;
+            color: white;
+            text-decoration: none;
+            font-size: 16px;
+            margin: 5px 0;
+            border-left: 4px solid transparent;
+            transition: 0.3s;
+        }
+
+        .sidebar a:hover,
+        .sidebar .active {
+            background: #3b82f6;
+            border-left: 4px solid #ffffff;
+        }
+
+        .main-content {
+            margin-left: 240px;
+            padding: 30px;
+            background: #f8fafc;
+            min-height: 100vh;
+        }
+
+        .header { 
+      background: white; 
+      padding: 18px 25px; 
+      border-radius: 10px; 
+      display: flex; 
+      justify-content: space-between; 
+      align-items: center; 
+      box-shadow: 0 3px 10px rgba(0,0,0,0.1); 
+      margin-bottom: 20px; 
+    }
+    .header h2 { 
+      color: #0d3b66; 
+      font-size: 24px; 
+      font-weight: 600;
+    }
+    .back-btn {
+      background: #3b82f6;
+      color: white;
+      padding: 8px 16px;
+      border-radius: 8px;
+      font-size: 16px;
+      text-decoration: none;
+      font-weight: 600;
+      transition: 0.2s;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    .back-btn:hover {
+      background: #2563eb;
+      transform: translateY(-2px);
+    }
+
+        .header h1 {
+            color: #1e3a8a;
+            font-size: 28px;
+            margin-bottom: 5px;
+        }
+
+        .header p {
+            color: #64748b;
+            font-size: 14px;
+        }
+
+        .table-container {
+            background: white;
+            border-radius: 10px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            overflow: hidden;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        thead {
+            background: #1e3a8a;
+            color: white;
+        }
+
+        th {
+            padding: 15px;
+            text-align: left;
+            font-weight: 600;
+            font-size: 14px;
+        }
+
+        td {
+            padding: 15px;
+            border-bottom: 1px solid #e2e8f0;
+            color: #334155;
+        }
+
+        tbody tr:hover {
+            background: #f8fafc;
+        }
+
+        .track-btn {
+            background: #3b82f6;
+            color: white;
+            border: none;
+            padding: 8px 20px;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 14px;
+            transition: 0.3s;
+            font-weight: 500;
+        }
+
+        .track-btn:hover {
+            background: #2563eb;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 8px rgba(59, 130, 246, 0.3);
+        }
+
+        .status-badge {
+            padding: 5px 12px;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: 600;
+            text-transform: capitalize;
+        }
+
+        .status-unverified {
+            background: #fee2e2;
+            color: #991b1b;
+        }
+
+        .status-verified {
+            background: #fef3c7;
+            color: #92400e;
+        }
+
+        .status-pending {
+            background: #dbeafe;
+            color: #1e40af;
+        }
+
+        .status-complete {
+            background: #dcfce7;
+            color: #166534;
+        }
+
+        /* Modal Styles */
+        .modal {
+            display: none;
+            position: fixed;
+            z-index: 1000;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.5);
+            animation: fadeIn 0.3s;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+
+        .modal-content {
+            background: white;
+            margin: 5% auto;
+            padding: 0;
+            border-radius: 12px;
+            width: 90%;
+            max-width: 650px;
+            box-shadow: 0 10px 40px rgba(0,0,0,0.2);
+            animation: slideIn 0.3s;
+        }
+
+        @keyframes slideIn {
+            from {
+                transform: translateY(-50px);
+                opacity: 0;
+            }
+            to {
+                transform: translateY(0);
+                opacity: 1;
+            }
+        }
+
+        .modal-header {
+            background: linear-gradient(135deg, #1e3a8a 0%, #3b82f6 100%);
+            color: white;
+            padding: 20px 25px;
+            border-radius: 12px 12px 0 0;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .modal-header h2 {
+            font-size: 20px;
+            margin: 0;
+        }
+
+        .close {
+            color: white;
+            font-size: 28px;
+            font-weight: bold;
+            cursor: pointer;
+            line-height: 1;
+            transition: 0.3s;
+        }
+
+        .close:hover {
+            transform: scale(1.1);
+        }
+
+        .modal-body {
+            padding: 40px;
+        }
+
+        .request-info {
+            background: #f8fafc;
+            padding: 15px;
+            border-radius: 8px;
+            margin-bottom: 35px;
+        }
+
+        .request-info h3 {
+            color: #1e3a8a;
+            margin-bottom: 8px;
+            font-size: 16px;
+        }
+
+        .request-info p {
+            color: #64748b;
+            font-size: 14px;
+        }
+
+        /* Progress Container */
+        .progress-container {
+            position: relative;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin: 40px 0 30px;
+            padding: 0;
+        }
+
+        /* Background line - connects all circles */
+        .progress-line {
+            position: absolute;
+            top: 20px;
+            left: 20px;
+            right: 20px;
+            height: 4px;
+            background: #e2e8f0;
+            border-radius: 6px;
+            z-index: 1;
+        }
+
+        /* Active progress bar - stops at circles, doesn't overflow */
+        .progress-bar {
+            position: absolute;
+            top: 20px;
+            left: 20px;
+            height: 4px;
+            background: linear-gradient(90deg, #3b82f6, #2563eb);
+            border-radius: 6px;
+            z-index: 2;
+            width: 0%;
+            transition: width 0.6s ease-in-out;
+        }
+
+        /* Step container */
+        .step {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            z-index: 3;
+            position: relative;
+        }
+
+        /* Circle styling */
+        .circle {
+            width: 40px;
+            height: 40px;
+            background: #e2e8f0;
+            border-radius: 50%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            color: #94a3b8;
+            font-weight: bold;
+            font-size: 16px;
+            border: 4px solid white;
+            transition: all 0.3s ease;
+            box-shadow: 0px 2px 8px rgba(0,0,0,0.1);
+        }
+
+        .circle.active {
+            background: linear-gradient(135deg, #3b82f6 0%, #2563eb 100%);
+            color: white;
+            transform: scale(1.15);
+            box-shadow: 0px 4px 12px rgba(59, 130, 246, 0.4);
+        }
+
+        .status-label {
+            text-align: center;
+            font-size: 11px;
+            margin-top: 12px;
+            color: #64748b;
+            max-width: 85px;
+            font-weight: 500;
+            line-height: 1.3;
+        }
+
+        .success-msg {
+            text-align: center;
+            font-weight: bold;
+            color: #059669;
+            margin-top: 25px;
+            font-size: 16px;
+            background: #dcfce7;
+            padding: 12px;
+            border-radius: 8px;
+        }
+    </style>
+</head>
+<body>
+    <div class="sidebar">
+        <h2>🏛️ Panchayat</h2>
+        <a href="{% url 'Mainpage' %}" >🏠 Home</a>
+        <a href="{% url 'notification_page2' %}">🔔 Notifications</a>
+        <a href="{% url 'complaint_form' %}">📝 Complaints</a>
+        <a href="{% url 'requestform' %}" >📋 Requests</a>
+         <a href="{% url 'Trackstatus' %}" class="active">🔍 Complaint Track Status</a>
+  <a href="{% url 'Trackstatus2' %}">🔍 Request Track Status</a>
+    </div>
+
+    <div class="main-content">
+        <div class="header">
+            <h1>Complaints Status</h1>
+            <p>Track and manage all Compalaints</p>
+            <a href="{% url 'Mainpage' %}" class="back-btn">
+            <span>🏠</span>
+            <span>Dashboard</span>
+      </a>
+        </div>
+
+        <div class="table-container">
+            <table>
+                <thead>
+                    <tr>
+                        <th>Complaint ID</th>
+                        <th>Type</th>
+                        <th>Name</th>
+                        <th>Phone Number</th>
+                        <th>Status</th>
+                        <th>Action</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for r in complaints %}
+                    <tr>
+                        <td><strong>#{{ r.id }}</strong></td>
+                        <td>{{ r.complaint_type }}</td>
+                        <td>{{ r.user }}</td>
+                        <td>{{ r.phone }}</td>
+                        <td>
+                            <span class="status-badge status-{{ r.status }}">
+                                {{ r.status }}
+                            </span>
+                        </td>
+                        <td>
+                            <button class="track-btn" onclick="openModal({{ r.id }}, '{{ r.request_type }}', '{{ r.status }}')">
+                                Track Status
+                            </button>
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <!-- Modal -->
+    <div id="statusModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2>Request Status Tracker</h2>
+                <span class="close" onclick="closeModal()">&times;</span>
+            </div>
+            <div class="modal-body">
+                <div class="request-info">
+                    <h3 id="modalRequestId"></h3>
+                    <p id="modalRequestType"></p>
+                </div>
+
+                <div class="progress-container">
+                    <div class="progress-line"></div>
+                    <div class="progress-bar" id="progressBar"></div>
+
+                    <div class="step">
+                        <div class="circle" id="step1">1</div>
+                        <div class="status-label">Request Raised</div>
+                    </div>
+                    <div class="step">
+                        <div class="circle" id="step2">2</div>
+                        <div class="status-label">Supervisor Verified</div>
+                    </div>
+                    <div class="step">
+                        <div class="circle" id="step3">3</div>
+                        <div class="status-label">Request Accepted</div>
+                    </div>
+                    <div class="step">
+                        <div class="circle" id="step4">4</div>
+                        <div class="status-label">Request Finished</div>
+                    </div>
+                </div>
+
+                <div id="successMessage" class="success-msg" style="display: none;">
+                    ✅ Request Successfully Completed!
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        function openModal(id, type, status) {
+            document.getElementById('modalRequestId').textContent = 'Request ID: #' + id;
+            document.getElementById('modalRequestType').textContent = 'Type: ' + type;
+            
+            // Reset all steps
+            for (let i = 1; i <= 4; i++) {
+                document.getElementById('step' + i).classList.remove('active');
+            }
+            
+            // Calculate progress - stops at each circle, doesn't overflow
+            let progressWidth = 0;
+            let activeSteps = 0;
+            
+            // Total width available (container minus space for circles)
+            // With 4 steps, we have 3 gaps between them
+            const containerWidth = document.querySelector('.progress-container').offsetWidth;
+            const circleWidth = 40;
+            const totalGapWidth = containerWidth - (4 * circleWidth);
+            const singleGapPercent = (totalGapWidth / 3) / containerWidth * 100;
+            
+            switch(status) {
+                case 'unverified':
+                    progressWidth = 0;
+                    activeSteps = 1;
+                    break;
+                case 'verified':
+                    progressWidth = singleGapPercent;
+                    activeSteps = 2;
+                    break;
+                case 'pending':
+                    progressWidth = singleGapPercent * 2;
+                    activeSteps = 3;
+                    break;
+                case 'complete':
+                    progressWidth = singleGapPercent * 3;
+                    activeSteps = 4;
+                    document.getElementById('successMessage').style.display = 'block';
+                    break;
+            }
+            
+            // Activate steps
+            for (let i = 1; i <= activeSteps; i++) {
+                document.getElementById('step' + i).classList.add('active');
+            }
+            
+            document.getElementById('progressBar').style.width = progressWidth + '%';
+            document.getElementById('statusModal').style.display = 'block';
+        }
+
+        function closeModal() {
+            document.getElementById('statusModal').style.display = 'none';
+            document.getElementById('successMessage').style.display = 'none';
+        }
+
+        // Close modal when clicking outside
+        window.onclick = function(event) {
+            const modal = document.getElementById('statusModal');
+            if (event.target == modal) {
+                closeModal();
+            }
+        }
+    </script>
+</body>
+</html>

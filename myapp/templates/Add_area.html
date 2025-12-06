@@ -1,0 +1,683 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Add Area - Panchayat</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: #f0f4f8;
+            min-height: 100vh;
+        }
+
+        .sidebar {
+            width: 240px;
+            height: 100vh;
+            background: #1e3a8a;
+            color: #fff;
+            padding: 25px 0;
+            position: fixed;
+            top: 0;
+            left: 0;
+            overflow-y: auto;
+        }
+
+        .sidebar h2 {
+            text-align: center;
+            margin-bottom: 20px;
+            font-size: 22px;
+            letter-spacing: 1px;
+            font-weight: bold;
+        }
+
+        .menu a {
+            display: block;
+            padding: 14px 25px;
+            color: white;
+            text-decoration: none;
+            font-size: 16px;
+            transition: 0.2s;
+        }
+
+        .menu a:hover {
+            background: #144f8a;
+            padding-left: 30px;
+        }
+
+        .sidebar .active {
+            background: #3b82f6;
+            border-left: 4px solid #ffffff;
+        }
+
+        .main-content {
+            margin-left: 240px;
+            padding: 30px 40px;
+            min-height: 100vh;
+        }
+
+        .header {
+            background: white;
+            padding: 25px 30px;
+            border-radius: 10px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.08);
+            margin-bottom: 30px;
+            border-left: 5px solid #3b82f6;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 15px;
+        }
+
+        .header-left h1 {
+            color: #1e3a8a;
+            font-size: 28px;
+            margin-bottom: 8px;
+            font-weight: 600;
+        }
+
+        .header-left p {
+            color: #64748b;
+            font-size: 15px;
+        }
+
+        .add-btn {
+            background: #3b82f6;
+            color: white;
+            border: none;
+            padding: 12px 25px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 15px;
+            font-weight: 600;
+            transition: background 0.3s;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .add-btn:hover {
+            background: #2563eb;
+            transform: translateY(-2px);
+        }
+
+        /* Success Message */
+        .success-message {
+            background: #10b981;
+            color: white;
+            padding: 15px 20px;
+            border-radius: 10px;
+            margin-bottom: 20px;
+            display: none;
+            align-items: center;
+            gap: 10px;
+            box-shadow: 0 4px 15px rgba(16, 185, 129, 0.3);
+            animation: slideDown 0.3s ease-out;
+        }
+
+        .success-message.show {
+            display: flex;
+        }
+
+        @keyframes slideDown {
+            from {
+                transform: translateY(-20px);
+                opacity: 0;
+            }
+            to {
+                transform: translateY(0);
+                opacity: 1;
+            }
+        }
+
+        .success-message .icon {
+            font-size: 24px;
+        }
+
+        .success-message .text {
+            flex: 1;
+            font-weight: 600;
+        }
+
+        .success-message .close-msg {
+            cursor: pointer;
+            font-size: 20px;
+            opacity: 0.8;
+            transition: opacity 0.2s;
+        }
+
+        .success-message .close-msg:hover {
+            opacity: 1;
+        }
+
+        .table-container {
+            background: white;
+            border-radius: 10px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.08);
+            overflow: hidden;
+        }
+
+        .table-header {
+            padding: 20px 25px;
+            background: #1e3a8a;
+            color: white;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .table-header h2 {
+            font-size: 20px;
+            font-weight: 600;
+        }
+
+        .search-box {
+            padding: 8px 15px;
+            border: none;
+            border-radius: 5px;
+            width: 250px;
+            font-size: 14px;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        thead {
+            background: #f8fafc;
+        }
+
+        th {
+            padding: 15px;
+            text-align: left;
+            font-weight: 600;
+            color: #1e3a8a;
+            font-size: 14px;
+            border-bottom: 2px solid #e2e8f0;
+        }
+
+        td {
+            padding: 15px;
+            border-bottom: 1px solid #e2e8f0;
+            color: #64748b;
+            font-size: 14px;
+        }
+
+        tbody tr {
+            transition: background 0.2s;
+        }
+
+        tbody tr:hover {
+            background: #f8fafc;
+        }
+
+        .delete-btn {
+            background: #ef4444;
+            color: white;
+            border: none;
+            padding: 8px 16px;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 13px;
+            font-weight: 600;
+            transition: all 0.3s;
+            display: inline-flex;
+            align-items: center;
+            gap: 5px;
+        }
+
+        .delete-btn:hover {
+            background: #dc2626;
+            transform: translateY(-1px);
+        }
+
+        .empty-state {
+            text-align: center;
+            padding: 60px 20px;
+        }
+
+        .empty-state .icon {
+            font-size: 80px;
+            margin-bottom: 20px;
+            opacity: 0.3;
+        }
+
+        .empty-state h3 {
+            color: #64748b;
+            font-size: 22px;
+            margin-bottom: 10px;
+            font-weight: 600;
+        }
+
+        .empty-state p {
+            color: #94a3b8;
+            font-size: 15px;
+        }
+
+        /* Modal Styles */
+        .modal {
+            display: none;
+            position: fixed;
+            z-index: 1000;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.5);
+            animation: fadeIn 0.3s;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+
+        .modal-content {
+            background: white;
+            margin: 10% auto;
+            width: 90%;
+            max-width: 500px;
+            border-radius: 15px;
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.2);
+            animation: slideIn 0.3s;
+            overflow: hidden;
+        }
+
+        @keyframes slideIn {
+            from { transform: translateY(-50px); opacity: 0; }
+            to { transform: translateY(0); opacity: 1; }
+        }
+
+        .modal-header {
+            background: linear-gradient(135deg, #1e3a8a 0%, #3b82f6 100%);
+            color: white;
+            padding: 25px 30px;
+            position: relative;
+        }
+
+        .modal-header h2 {
+            font-size: 22px;
+            margin: 0;
+        }
+
+        .modal-header.delete-header {
+            background: linear-gradient(135deg, #dc2626 0%, #ef4444 100%);
+        }
+
+        .close {
+            position: absolute;
+            right: 20px;
+            top: 20px;
+            font-size: 32px;
+            font-weight: bold;
+            color: white;
+            cursor: pointer;
+            line-height: 1;
+            transition: transform 0.2s;
+        }
+
+        .close:hover {
+            transform: scale(1.2);
+        }
+
+        .modal-body {
+            padding: 30px;
+        }
+
+        .delete-confirmation {
+            text-align: center;
+            padding: 10px 0;
+        }
+
+        .delete-confirmation .warning-icon {
+            font-size: 60px;
+            margin-bottom: 15px;
+        }
+
+        .delete-confirmation p {
+            color: #64748b;
+            font-size: 16px;
+            line-height: 1.6;
+        }
+
+        .delete-confirmation .area-name {
+            color: #1e3a8a;
+            font-weight: 700;
+            font-size: 18px;
+            margin: 10px 0;
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        .form-group label {
+            display: block;
+            font-weight: 600;
+            color: #1e3a8a;
+            margin-bottom: 8px;
+            font-size: 14px;
+        }
+
+        .form-group input {
+            width: 100%;
+            padding: 12px 15px;
+            border: 2px solid #e2e8f0;
+            border-radius: 8px;
+            font-size: 14px;
+            transition: border-color 0.3s;
+        }
+
+        .form-group input:focus {
+            outline: none;
+            border-color: #3b82f6;
+        }
+
+        .modal-footer {
+            padding: 20px 30px;
+            background: #f8fafc;
+            display: flex;
+            justify-content: flex-end;
+            gap: 10px;
+        }
+
+        .btn {
+            padding: 10px 20px;
+            border: none;
+            border-radius: 8px;
+            font-size: 14px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .btn-primary {
+            background: #3b82f6;
+            color: white;
+        }
+
+        .btn-primary:hover {
+            background: #2563eb;
+        }
+
+        .btn-danger {
+            background: #ef4444;
+            color: white;
+        }
+
+        .btn-danger:hover {
+            background: #dc2626;
+        }
+
+        .btn-secondary {
+            background: #e2e8f0;
+            color: #64748b;
+        }
+
+        .btn-secondary:hover {
+            background: #cbd5e1;
+        }
+
+        @media (max-width: 768px) {
+            .sidebar {
+                width: 100%;
+                height: auto;
+                position: relative;
+            }
+
+            .main-content {
+                margin-left: 0;
+                padding: 20px;
+            }
+
+            .header {
+                flex-direction: column;
+                align-items: flex-start;
+            }
+
+            .table-header {
+                flex-direction: column;
+                gap: 15px;
+            }
+
+            .search-box {
+                width: 100%;
+            }
+
+            .modal-content {
+                width: 95%;
+                margin: 20% auto;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="sidebar" role="navigation" aria-label="Main sidebar">
+        <h2>PANCHAYAT</h2>
+        <div class="menu">
+            <a href="{% url 'Mainpageadmin' %}">🏠 Dashboard</a>
+            <a href="{% url 'Posts' %}">📌 Posts</a>
+            <a href="{% url 'Add_supervisor' %}">👨‍💼 Add Supervisor</a>
+            <a href="{% url 'Add_eo' %}">🧑‍💼 Add EO</a>
+            <a href="{% url 'Tasks' %}">🗂️ Tasks</a>
+            <a href="{% url 'achievment' %}">🏆 Achievements</a>
+            <a href="{% url 'Add_area' %}" class="active">📍 Add Area</a>
+        </div>
+    </div>
+
+    <div class="main-content">
+        <!-- Success Message -->
+        <div id="successMessage" class="success-message">
+            <span class="icon">✓</span>
+            <span class="text" id="successText">Area added successfully!</span>
+            <span class="close-msg" onclick="closeSuccessMessage()">×</span>
+        </div>
+
+        <div class="header">
+            <div class="header-left">
+                <h1>📍 Manage Areas</h1>
+                <p>Add and manage panchayat areas</p>
+            </div>
+            <button class="add-btn" onclick="openModal()">
+                <span>➕</span>
+                <span>Add Area</span>
+            </button>
+        </div>
+
+        <div class="table-container">
+            <div class="table-header">
+                <h2>Area List</h2>
+                <input type="text" class="search-box" id="searchBox" placeholder="🔍 Search areas...">
+            </div>
+            <table>
+                <thead>
+                    <tr>
+                        <th>S.No</th>
+                        <th>Area Name</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+                <tbody id="tableBody">
+                    {% if areas %}
+                        {% for area in areas %}
+                        <tr>
+                            <td>{{ forloop.counter }}</td>
+                            <td>{{ area.name }}</td>
+                            <td>
+                                <button class="delete-btn" onclick="openDeleteModal('{{ area.id }}', '{{ area.name }}')">
+                                    🗑️ Delete
+                                </button>
+                            </td>
+                        </tr>
+                        {% endfor %}
+                    {% else %}
+                        <tr>
+                            <td colspan="3">
+                                <div class="empty-state">
+                                    <div class="icon">📍</div>
+                                    <h3>No Areas Added Yet</h3>
+                                    <p>Click "Add Area" button to add new areas</p>
+                                </div>
+                            </td>
+                        </tr>
+                    {% endif %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <!-- Add Area Modal -->
+    <div id="addAreaModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <span class="close" onclick="closeModal()">&times;</span>
+                <h2>➕ Add New Area</h2>
+            </div>
+            <form method="POST" action="{% url 'Add_area' %}">
+                {% csrf_token %}
+                <div class="modal-body">
+                    <div class="form-group">
+                        <label for="areaName">Area Name *</label>
+                        <input 
+                            type="text" 
+                            id="areaName"
+                            name="name" 
+                            placeholder="Enter area name" 
+                            required
+                            autocomplete="off"
+                        >
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" onclick="closeModal()">Cancel</button>
+                    <button type="submit" class="btn btn-primary">Add Area</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Delete Confirmation Modal -->
+    <div id="deleteModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header delete-header">
+                <span class="close" onclick="closeDeleteModal()">&times;</span>
+                <h2>🗑️ Delete Area</h2>
+            </div>
+            <form method="POST" action="{% url 'Delete_area' %}" id="deleteForm">
+                {% csrf_token %}
+                <input type="hidden" name="area_id" id="deleteAreaId">
+                <div class="modal-body">
+                    <div class="delete-confirmation">
+                        <div class="warning-icon">⚠️</div>
+                        <p>Are you sure you want to delete this area?</p>
+                        <p class="area-name" id="deleteAreaName"></p>
+                        <p style="color: #ef4444; margin-top: 15px;">This action cannot be undone!</p>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" onclick="closeDeleteModal()">Cancel</button>
+                    <button type="submit" class="btn btn-danger">Delete Area</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <script>
+        // Open add modal
+        function openModal() {
+            document.getElementById('addAreaModal').style.display = 'block';
+            document.getElementById('areaName').focus();
+        }
+
+        // Close add modal
+        function closeModal() {
+            document.getElementById('addAreaModal').style.display = 'none';
+            document.getElementById('areaName').value = '';
+        }
+
+        // Open delete modal
+        function openDeleteModal(areaId, areaName) {
+            document.getElementById('deleteAreaId').value = areaId;
+            document.getElementById('deleteAreaName').textContent = areaName;
+            document.getElementById('deleteModal').style.display = 'block';
+        }
+
+        // Close delete modal
+        function closeDeleteModal() {
+            document.getElementById('deleteModal').style.display = 'none';
+        }
+
+        // Close modal when clicking outside
+        window.onclick = function(event) {
+            const addModal = document.getElementById('addAreaModal');
+            const deleteModal = document.getElementById('deleteModal');
+            if (event.target === addModal) {
+                closeModal();
+            }
+            if (event.target === deleteModal) {
+                closeDeleteModal();
+            }
+        }
+
+        // Close modal on Escape key
+        document.addEventListener('keydown', function(event) {
+            if (event.key === 'Escape') {
+                closeModal();
+                closeDeleteModal();
+            }
+        });
+
+        // Search functionality
+        document.getElementById('searchBox').addEventListener('keyup', function() {
+            const searchValue = this.value.toLowerCase();
+            const tableRows = document.querySelectorAll('#tableBody tr');
+            
+            tableRows.forEach(row => {
+                const text = row.textContent.toLowerCase();
+                row.style.display = text.includes(searchValue) ? '' : 'none';
+            });
+        });
+
+        // Show success message
+        function showSuccessMessage(message) {
+            const successMsg = document.getElementById('successMessage');
+            const successText = document.getElementById('successText');
+            successText.textContent = message;
+            successMsg.classList.add('show');
+            
+            // Auto hide after 3 seconds
+            setTimeout(() => {
+                closeSuccessMessage();
+            }, 3000);
+        }
+
+        // Close success message
+        function closeSuccessMessage() {
+            document.getElementById('successMessage').classList.remove('show');
+        }
+
+        // Check for success message in URL parameters
+        window.addEventListener('DOMContentLoaded', function() {
+            const urlParams = new URLSearchParams(window.location.search);
+            const message = urlParams.get('message');
+            
+            if (message === 'added') {
+                showSuccessMessage('Area added successfully!');
+            } else if (message === 'deleted') {
+                showSuccessMessage('Area deleted successfully!');
+            }
+            else if(message === 'exists'){
+                showSuccessMessage('❌ Area already exists!');
+            }
+        });
+    </script>
+</body>
+</html>
