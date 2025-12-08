@@ -55,5 +55,5 @@ urlpatterns = [
     path("publicsignups/", views.public_signups, name="public_signups"),
     path('achievement/', views.achievement, name='achievment'),
     path('achievementsupervisor/', views.Achievementsupervisor, name='Achievementsupervisor'),
-    path('complaints_eo/', views.complaints_eo, name='complaints_eo'),
+    path('complaintseo/', views.complaints_eo, name='complaints_eo'),
 ]
