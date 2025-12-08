@@ -1,0 +1,668 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Complaints Management</title>
+
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; font-family: "Segoe UI", Arial; }
+    body { display: flex; background: #f1f7ff; min-height: 100vh; }
+
+    /* Sidebar */
+    .sidebar { 
+      width: 240px; 
+      height: 100vh; 
+      background: #1e3a8a; 
+      color: #fff; 
+      padding: 25px 0; 
+      position: fixed; 
+      top: 0; 
+      left: 0;
+      overflow-y: auto;
+    }
+    .sidebar h2 { 
+      text-align: center; 
+      margin-bottom: 20px; 
+      font-size: 22px; 
+      letter-spacing: 1px; 
+      font-weight: bold; 
+    }
+    .menu a { 
+      display: block; 
+      padding: 14px 25px; 
+      color: white; 
+      text-decoration: none; 
+      font-size: 16px; 
+      transition: 0.2s; 
+    }
+    .menu a:hover { 
+      background: #144f8a; 
+      padding-left: 30px; 
+    }
+    .sidebar .active {
+      background: #3b82f6;
+      border-left: 4px solid #ffffff;
+    }
+
+    /* Main Content */
+    .main-content { 
+      margin-left: 240px; 
+      padding: 20px; 
+      width: calc(100% - 240px); 
+    }
+
+    /* Header */
+    .header { 
+      background: white; 
+      padding: 18px 25px; 
+      border-radius: 10px; 
+      display: flex; 
+      justify-content: space-between; 
+      align-items: center; 
+      box-shadow: 0 3px 10px rgba(0,0,0,0.1); 
+      margin-bottom: 20px; 
+    }
+    .header h2 { 
+      color: #0d3b66; 
+      font-size: 24px; 
+      font-weight: 600;
+    }
+    .header-actions {
+      display: flex;
+      gap: 10px;
+      align-items: center;
+    }
+    .back-btn, .add-btn {
+      background: #3b82f6;
+      color: white;
+      padding: 8px 16px;
+      border-radius: 8px;
+      font-size: 14px;
+      text-decoration: none;
+      font-weight: 600;
+      transition: 0.2s;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      border: none;
+      cursor: pointer;
+    }
+    .back-btn:hover, .add-btn:hover {
+      background: #2563eb;
+      transform: translateY(-2px);
+    }
+    .add-btn {
+      background: #10b981;
+    }
+    .add-btn:hover {
+      background: #059669;
+    }
+
+    /* Filter Section */
+    .filter-section {
+      background: white;
+      padding: 20px;
+      border-radius: 10px;
+      box-shadow: 0 3px 10px rgba(0,0,0,0.1);
+      margin-bottom: 20px;
+    }
+    .filter-title {
+      font-size: 18px;
+      color: #0d3b66;
+      font-weight: 600;
+      margin-bottom: 15px;
+    }
+    .filter-container {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+      gap: 15px;
+    }
+    .filter-group { 
+      display: flex; 
+      flex-direction: column; 
+    }
+    .filter-group label { 
+      font-size: 14px; 
+      color: #0d3b66; 
+      margin-bottom: 6px; 
+      font-weight: 600; 
+    }
+    .filter-group input, .filter-group select {
+      padding: 10px 12px;
+      border-radius: 8px;
+      border: 1px solid #cbd5e1;
+      font-size: 14px;
+      background-color: white;
+      transition: 0.2s;
+    }
+    .filter-group input:focus, .filter-group select:focus {
+      outline: none;
+      border-color: #3b82f6;
+      box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
+    }
+
+    /* Table Container */
+    .table-container {
+      background: white;
+      border-radius: 10px;
+      box-shadow: 0 3px 10px rgba(0,0,0,0.1);
+      overflow: hidden;
+    }
+    
+    .table-wrapper {
+      overflow-x: auto;
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+    }
+
+    thead {
+      background: linear-gradient(135deg, #1e3a8a 0%, #3b82f6 100%);
+      color: white;
+    }
+
+    thead th {
+      padding: 16px 12px;
+      text-align: left;
+      font-weight: 600;
+      font-size: 14px;
+      letter-spacing: 0.5px;
+      white-space: nowrap;
+    }
+
+    tbody tr {
+      border-bottom: 1px solid #e2e8f0;
+      transition: 0.2s;
+    }
+
+    tbody tr:hover {
+      background: #f8fafc;
+    }
+
+    tbody tr:last-child {
+      border-bottom: none;
+    }
+
+    tbody td {
+      padding: 14px 12px;
+      font-size: 14px;
+      color: #334155;
+    }
+
+    /* Status Badges */
+    .status-badge {
+      padding: 6px 14px;
+      border-radius: 20px;
+      font-size: 13px;
+      font-weight: 600;
+      display: inline-block;
+      white-space: nowrap;
+    }
+
+    .status-verified {
+      background: #d1fae5;
+      color: #065f46;
+    }
+
+    .status-unverified {
+      background: #fee2e2;
+      color: #991b1b;
+    }
+
+    .status-pending {
+      background: #fef3c7;
+      color: #92400e;
+    }
+
+    .status-completed {
+      background: #dbeafe;
+      color: #1e40af;
+    }
+
+    .status-rejected {
+      background: #fce7f3;
+      color: #831843;
+    }
+
+    /* Action Buttons */
+    .action-btns {
+      display: flex;
+      gap: 8px;
+    }
+
+    .action-btn {
+      padding: 6px 12px;
+      border: none;
+      border-radius: 6px;
+      font-size: 13px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: 0.2s;
+      white-space: nowrap;
+    }
+
+    .btn-view {
+      background: #dbeafe;
+      color: #1e40af;
+    }
+
+    .btn-view:hover {
+      background: #bfdbfe;
+    }
+
+    .btn-edit {
+      background: #fef3c7;
+      color: #92400e;
+    }
+
+    .btn-edit:hover {
+      background: #fde68a;
+    }
+
+    .btn-delete {
+      background: #fee2e2;
+      color: #991b1b;
+    }
+
+    .btn-delete:hover {
+      background: #fecaca;
+    }
+
+    /* Profile Initial */
+    .profile-initial {
+      width: 40px;
+      height: 40px;
+      border-radius: 50%;
+      background: linear-gradient(135deg, #3b82f6, #1e3a8a);
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      color: white;
+      font-weight: bold;
+      font-size: 16px;
+    }
+
+    /* Empty State */
+    .empty-state {
+      text-align: center;
+      padding: 60px 20px;
+    }
+    .empty-state-icon {
+      font-size: 64px;
+      margin-bottom: 20px;
+    }
+    .empty-state h3 {
+      color: #0d3b66;
+      font-size: 20px;
+      margin-bottom: 10px;
+    }
+    .empty-state p {
+      color: #64748b;
+      font-size: 14px;
+    }
+
+    /* Pagination */
+    .pagination {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      gap: 10px;
+      padding: 20px;
+      background: white;
+    }
+
+    .page-btn {
+      padding: 8px 14px;
+      border: 1px solid #cbd5e1;
+      background: white;
+      color: #0d3b66;
+      border-radius: 6px;
+      cursor: pointer;
+      font-size: 14px;
+      font-weight: 600;
+      transition: 0.2s;
+    }
+
+    .page-btn:hover {
+      background: #f1f7ff;
+      border-color: #3b82f6;
+    }
+
+    .page-btn.active {
+      background: #3b82f6;
+      color: white;
+      border-color: #3b82f6;
+    }
+
+    .page-btn:disabled {
+      opacity: 0.5;
+      cursor: not-allowed;
+    }
+
+    /* Responsive */
+    @media (max-width: 768px) {
+      .sidebar { 
+        position: relative; 
+        width: 100%; 
+        height: auto; 
+        padding: 15px; 
+      }
+      .sidebar h2 {
+        font-size: 18px;
+        margin-bottom: 10px;
+      }
+      .menu {
+        display: flex;
+        gap: 8px;
+        overflow-x: auto;
+      }
+      .menu a {
+        white-space: nowrap;
+        padding: 10px 15px;
+      }
+      body { flex-direction: column; }
+      .main-content { 
+        margin-left: 0; 
+        width: 100%; 
+        padding: 15px; 
+      }
+      .header {
+        flex-direction: column;
+        gap: 15px;
+      }
+      .header-actions {
+        width: 100%;
+        justify-content: space-between;
+      }
+      .filter-container {
+        grid-template-columns: 1fr;
+      }
+      .action-btns {
+        flex-direction: column;
+      }
+      thead th, tbody td {
+        padding: 10px 8px;
+        font-size: 13px;
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Sidebar -->
+  <div class="sidebar">
+    <h2>PANCHAYAT</h2>
+    <div class="menu">
+      <a href="{% url 'Mainsupervisor' %}">🏠 Dashboard</a>
+      <a href="{% url 'complaintsupervisor' %}" class="active">📝 Complaints</a>
+      <a href="{% url 'requestsupervisor' %}">📋 Requests</a>
+      <a href="{% url 'notification_page' %}">🔔 Notifications</a>
+      <a href="{% url 'Achievementsupervisor' %}">🏆 Achievements</a>
+    </div>
+  </div>
+
+  <!-- Main Content -->
+  <div class="main-content">
+    <!-- Header -->
+    <div class="header">
+      <h2>Complaints Management</h2>
+      <div class="header-actions">
+        <button class="add-btn" onclick="alert('Add new complaint')">
+          <span>➕</span>
+          <span>New Complaint</span>
+        </button>
+        <a href="#" class="back-btn">
+          <span>🏠</span>
+          <span>Dashboard</span>
+        </a>
+      </div>
+    </div>
+
+    <!-- Filter Section -->
+    <div class="filter-section">
+      <div class="filter-title">🔍 Filter Complaints</div>
+      <div class="filter-container">
+        <div class="filter-group">
+          <label for="name-filter">Name</label>
+          <input 
+            type="text" 
+            id="name-filter" 
+            placeholder="Search by name...">
+        </div>
+
+        <div class="filter-group">
+          <label for="area-filter">Area</label>
+          <input 
+            type="text" 
+            id="area-filter" 
+            placeholder="Search by area...">
+        </div>
+
+        <div class="filter-group">
+          <label for="type-filter">Complaint Type</label>
+          <input 
+            type="text" 
+            id="type-filter" 
+            placeholder="Search by type...">
+        </div>
+
+        <div class="filter-group">
+          <label for="status-filter">Status</label>
+          <select id="status-filter">
+            <option value="">All Status</option>
+            <option value="verified">Verified</option>
+            <option value="unverified">Unverified</option>
+            <option value="pending">Pending</option>
+            <option value="completed">Completed</option>
+            <option value="rejected">Rejected</option>
+          </select>
+        </div>
+      </div>
+    </div>
+
+    <!-- Table Container -->
+    <div class="table-container">
+      <div class="table-wrapper">
+        <table id="complaints-table">
+          <thead>
+            <tr>
+              <th>User</th>
+              <th>Name</th>
+              <th>Phone</th>
+              <th>Address</th>
+              <th>Area</th>
+              <th>Complaint Type</th>
+              <th>Supervisor</th>
+              <th>Status</th>
+              <th>Actions</th>
+            </tr>
+          </thead>
+          <tbody id="table-body">
+            {% for complaint in complaints %}
+            <tr data-name="{{ complaint.user|lower }}" 
+                data-area="{{ complaint.location|lower }}" 
+                data-type="{{ complaint.complaint_type|lower }}" 
+                data-status="{{ complaint.status|lower }}">
+              <td>
+                <div class="profile-initial">{{ complaint.user.0|upper }}{{ complaint.user.1|upper }}</div>
+              </td>
+              <td>{{ complaint.user }}</td>
+              <td>{{ complaint.phone }}</td>
+              <td>{{ complaint.address }}</td>
+              <td>{{ complaint.location }}</td>
+              <td>{{ complaint.complaint_type }}</td>
+              <td>{{ complaint.supervisor_name }}</td>
+              <td>
+                {% if complaint.status == 'verified' %}
+                  <span class="status-badge status-verified">✓ Verified</span>
+                {% elif complaint.status == 'unverified' %}
+                  <span class="status-badge status-unverified">✗ Unverified</span>
+                {% elif complaint.status == 'pending' %}
+                  <span class="status-badge status-pending">⏳ Pending</span>
+                {% elif complaint.status == 'completed' %}
+                  <span class="status-badge status-completed">✓ Completed</span>
+                {% elif complaint.status == 'rejected' %}
+                  <span class="status-badge status-rejected">✗ Rejected</span>
+                {% else %}
+                  <span class="status-badge status-pending">{{ complaint.status }}</span>
+                {% endif %}
+              </td>
+              <td>
+                <div class="action-btns">
+                  <button class="action-btn btn-view" onclick="viewComplaint({{ complaint.id }})">👁️ View</button>
+                  <button class="action-btn btn-edit" onclick="editComplaint({{ complaint.id }})">✏️ Edit</button>
+                  <button class="action-btn btn-delete" onclick="deleteComplaint({{ complaint.id }})">🗑️ Delete</button>
+                </div>
+              </td>
+            </tr>
+            {% empty %}
+            {% endfor %}
+          </tbody>
+        </table>
+      </div>
+
+      <!-- Empty State (shown when no complaints) -->
+      {% if not complaints %}
+      <div class="empty-state" id="empty-state">
+        <div class="empty-state-icon">📋</div>
+        <h3>No Complaints Found</h3>
+        <p>There are currently no complaints in the database.</p>
+      </div>
+      {% else %}
+      <div class="empty-state" id="empty-state" style="display: none;">
+        <div class="empty-state-icon">📋</div>
+        <h3>No Complaints Found</h3>
+        <p>No complaints match your current filters.</p>
+      </div>
+      {% endif %}
+
+      <!-- Pagination -->
+      <div class="pagination">
+        <button class="page-btn" id="prev-btn">← Previous</button>
+        <button class="page-btn active">1</button>
+        <button class="page-btn">2</button>
+        <button class="page-btn">3</button>
+        <button class="page-btn" id="next-btn">Next →</button>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    // Filter functionality
+    const nameFilter = document.getElementById('name-filter');
+    const areaFilter = document.getElementById('area-filter');
+    const typeFilter = document.getElementById('type-filter');
+    const statusFilter = document.getElementById('status-filter');
+    const tableBody = document.getElementById('table-body');
+    const emptyState = document.getElementById('empty-state');
+    const tableWrapper = document.querySelector('.table-wrapper');
+
+    function filterTable() {
+      const nameVal = nameFilter.value.toLowerCase();
+      const areaVal = areaFilter.value.toLowerCase();
+      const typeVal = typeFilter.value.toLowerCase();
+      const statusVal = statusFilter.value.toLowerCase();
+
+      const rows = tableBody.querySelectorAll('tr');
+      let visibleCount = 0;
+
+      rows.forEach(row => {
+        const name = row.getAttribute('data-name');
+        const area = row.getAttribute('data-area');
+        const type = row.getAttribute('data-type');
+        const status = row.getAttribute('data-status');
+
+        const matchName = name.includes(nameVal);
+        const matchArea = area.includes(areaVal);
+        const matchType = type.includes(typeVal);
+        const matchStatus = statusVal === '' || status === statusVal;
+
+        if (matchName && matchArea && matchType && matchStatus) {
+          row.style.display = '';
+          visibleCount++;
+        } else {
+          row.style.display = 'none';
+        }
+      });
+
+      // Show/hide empty state
+      if (visibleCount === 0) {
+        tableWrapper.style.display = 'none';
+        emptyState.style.display = 'block';
+      } else {
+        tableWrapper.style.display = 'block';
+        emptyState.style.display = 'none';
+      }
+    }
+
+    nameFilter.addEventListener('input', filterTable);
+    areaFilter.addEventListener('input', filterTable);
+    typeFilter.addEventListener('input', filterTable);
+    statusFilter.addEventListener('change', filterTable);
+
+    // Action functions
+    function viewComplaint(id) {
+      window.location.href = `/complaint/view/${id}/`;
+    }
+
+    function editComplaint(id) {
+      window.location.href = `/complaint/edit/${id}/`;
+    }
+
+    function deleteComplaint(id) {
+      if (confirm(`Are you sure you want to delete complaint #${id}?`)) {
+        // CSRF token helper
+        function getCookie(name) {
+          let cookieValue = null;
+          if (document.cookie && document.cookie !== '') {
+            const cookies = document.cookie.split(';');
+            for (let i = 0; i < cookies.length; i++) {
+              const cookie = cookies[i].trim();
+              if (cookie.substring(0, name.length + 1) === (name + '=')) {
+                cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+                break;
+              }
+            }
+          }
+          return cookieValue;
+        }
+        const csrftoken = getCookie('csrftoken');
+
+        fetch(`/complaint/delete/${id}/`, {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+            'X-CSRFToken': csrftoken
+          }
+        })
+        .then(res => res.json())
+        .then(data => {
+          if (data.success) {
+            alert('Complaint deleted successfully');
+            location.reload();
+          } else {
+            alert('Failed to delete complaint');
+          }
+        })
+        .catch(err => {
+          console.error('Error:', err);
+          alert('Network error. Please try again.');
+        });
+      }
+    }
+
+    // Pagination
+    const pageButtons = document.querySelectorAll('.page-btn:not(#prev-btn):not(#next-btn)');
+    pageButtons.forEach(btn => {
+      btn.addEventListener('click', function() {
+        pageButtons.forEach(b => b.classList.remove('active'));
+        this.classList.add('active');
+      });
+    });
+  </script>
+
+</body>
+</html>

@@ -663,10 +663,10 @@ def eo_requests(request):
     return render(request, 'eo_requests.html',context)
 def login4(request):
     if request.method == "POST":
-        emp_number = request.POST.get("emp_number")
+        eo_number = request.POST.get("eo_number")
         password = request.POST.get("password")
 
-        user = EOSignup.objects.filter(emp_number=emp_number, password=password).first()
+        user = EOSignup.objects.filter(eo_number=eo_number, password=password).first()
         if user:
             print("success")
             messages.success(request, "✅ Login Successful!")
@@ -680,7 +680,7 @@ def login4(request):
 
     return render(request, "loginpageeo.html")
 def eo_dashboard(request):
-    return render(request, 'eomain.html')
+    return render(request, 'Maineo.html')
 def eo_signup(request):
     if request.method == "POST":
         emp_number = request.POST.get("emp_number")
@@ -756,3 +756,7 @@ def Achievementsupervisor(request):
     complaints = Complaint.objects.filter(supervisor_name=supervisor_username, status='verified')
     requests = Request.objects.filter(supervisor_name=supervisor_username, status='verified')
     return render(request, "achievementsupervisor.html", {"complaints": complaints, "requests": requests})
+
+def complaints_eo(request):
+    complaints = Complaint.objects.all().order_by('-date_time')
+    return render(request, 'complaintseo.html', {'complaints': complaints})
