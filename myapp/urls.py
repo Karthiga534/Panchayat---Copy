@@ -41,6 +41,7 @@ urlpatterns = [
     path('notifications/', views.notification_page, name='notification_page'),
     path('notifications/delete/<int:post_id>/', views.delete_post, name='delete_post'),
     path('notificationspublic/', views.notification_page2, name='notification_page2'),
+    path('notificationeo/', views.notification_page3, name='notification_page3'),
     path('delete-post3/<int:post_id>/', views.delete_post3, name='delete_post3'),
     path('notificationspublic/delete2/<int:post_id>/', views.delete_post2, name='delete_post2'),
     path('toggle-status/<int:complaint_id>/', views.toggle_status, name='toggle_status'),

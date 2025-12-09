@@ -202,9 +202,9 @@
       white-space: nowrap;
     }
 
-    .status-approved {
-      background: #d1fae5;
-      color: #065f46;
+    .status-verified {
+      background: #98d3f5;
+      color: #1607e7;
     }
 
     .status-pending {
@@ -401,11 +401,10 @@
   <div class="sidebar">
     <h2>PANCHAYAT</h2>
     <div class="menu">
-      <a href="{% url 'Mainsupervisor' %}">🏠 Dashboard</a>
+      <a href="{% url 'eo_dashboard' %}">🏠 Dashboard</a>
       <a href="{% url 'complaints_eo' %}">📝 Complaints</a>
       <a href="{% url 'requests_eo' %}" class="active">📋 Requests</a>
       <a href="{% url 'notification_page' %}">🔔 Notifications</a>
-      <a href="{% url 'Achievementsupervisor' %}">🏆 Achievements</a>
     </div>
   </div>
 
@@ -415,11 +414,7 @@
     <div class="header">
       <h2>Requests Management</h2>
       <div class="header-actions">
-        <button class="add-btn" onclick="alert('Add new request')">
-          <span>➕</span>
-          <span>New Request</span>
-        </button>
-        <a href="#" class="back-btn">
+        <a href="{% url 'eo_dashboard' %}" class="back-btn">
           <span>🏠</span>
           <span>Dashboard</span>
         </a>
@@ -458,12 +453,11 @@
           <label for="status-filter">Status</label>
           <select id="status-filter">
             <option value="">All Status</option>
-            <option value="approved">Approved</option>
+            <option value="verified">Verified</option>
+            <option value="unverified">Unverified</option>
             <option value="pending">Pending</option>
-            <option value="processing">Processing</option>
             <option value="completed">Completed</option>
             <option value="rejected">Rejected</option>
-            <option value="on-hold">On Hold</option>
           </select>
         </div>
       </div>
@@ -488,8 +482,8 @@
           </thead>
           <tbody id="table-body">
             {% for request in requests %}
-            <tr data-name="{{ request.user|lower }}" 
-                data-area="{{ request.location|lower }}" 
+            <tr data-name="{{ request.name|lower }}" 
+                data-area="{{ request.area|lower }}" 
                 data-type="{{ request.request_type|lower }}" 
                 data-status="{{ request.status|lower }}">
               <td>
@@ -502,18 +496,16 @@
               <td>{{ request.request_type }}</td>
               <td>{{ request.supervisor_name }}</td>
               <td>
-                {% if request.status == 'approved' %}
-                  <span class="status-badge status-approved">✓ Approved</span>
+                {% if request.status == 'verified' %}
+                  <span class="status-badge status-verified">✓ Verified</span>
+                {% elif request.status == 'unverified' %}
+                  <span class="status-badge status-unverified">✗ Unverified</span>
                 {% elif request.status == 'pending' %}
                   <span class="status-badge status-pending">⏳ Pending</span>
-                {% elif request.status == 'processing' %}
-                  <span class="status-badge status-processing">⚙️ Processing</span>
-                {% elif request.status == 'completed' %}
+                {% elif request.status == 'complete' %}
                   <span class="status-badge status-completed">✓ Completed</span>
                 {% elif request.status == 'rejected' %}
                   <span class="status-badge status-rejected">✗ Rejected</span>
-                {% elif request.status == 'on-hold' %}
-                  <span class="status-badge status-on-hold">⏸️ On Hold</span>
                 {% else %}
                   <span class="status-badge status-pending">{{ request.status }}</span>
                 {% endif %}
@@ -521,8 +513,6 @@
               <td>
                 <div class="action-btns">
                   <button class="action-btn btn-view" onclick="viewRequest({{ request.id }})">👁️ View</button>
-                  <button class="action-btn btn-edit" onclick="editRequest({{ request.id }})">✏️ Edit</button>
-                  <button class="action-btn btn-delete" onclick="deleteRequest({{ request.id }})">🗑️ Delete</button>
                 </div>
               </td>
             </tr>
@@ -547,14 +537,6 @@
       </div>
       {% endif %}
 
-      <!-- Pagination -->
-      <div class="pagination">
-        <button class="page-btn" id="prev-btn">← Previous</button>
-        <button class="page-btn active">1</button>
-        <button class="page-btn">2</button>
-        <button class="page-btn">3</button>
-        <button class="page-btn" id="next-btn">Next →</button>
-      </div>
     </div>
   </div>
 

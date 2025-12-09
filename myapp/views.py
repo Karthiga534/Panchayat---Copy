@@ -584,7 +584,13 @@ def notification_page2(request):  # for public or supervisor
 
     posts = Post.objects.exclude(deleted_by__icontains=username).order_by('-created_at')
     return render(request, "Notificationpublic.html", {'posts': posts})
+def notification_page3(requests): #EO
+    usernumber = requests.session.get('eo_number')
+    if not usernumber:
+        return redirect('login4')  # not logged in
 
+    #posts = Post.objects.exclude(deleted_by__icontains=username).order_by('-created_at')
+    return render(requests, "notification_eo.html", {'posts': posts})
 def delete_post(request, post_id):  # Supervisor
     username = request.session.get('supervisor_username')
     if not username:
@@ -667,6 +673,7 @@ def login4(request):
         password = request.POST.get("password")
 
         user = EOSignup.objects.filter(eo_number=eo_number, password=password).first()
+        request.session['eo_number']=eo_number
         if user:
             print("success")
             messages.success(request, "✅ Login Successful!")
@@ -680,7 +687,8 @@ def login4(request):
 
     return render(request, "loginpageeo.html")
 def eo_dashboard(request):
-    return render(request, 'Maineo.html')
+    notification_count = Post.objects.count()
+    return render(request, 'Maineo.html',{'notification_count': notification_count})
 def eo_signup(request):
     if request.method == "POST":
         emp_number = request.POST.get("emp_number")

@@ -396,11 +396,10 @@
   <div class="sidebar">
     <h2>PANCHAYAT</h2>
     <div class="menu">
-      <a href="{% url 'Mainsupervisor' %}">🏠 Dashboard</a>
+      <a href="{% url 'eo_dashboard' %}">🏠 Dashboard</a>
       <a href="{% url 'complaints_eo' %}" class="active">📝 Complaints</a>
-      <a href="{% url 'requestsupervisor' %}">📋 Requests</a>
+      <a href="{% url 'requests_eo' %}">📋 Requests</a>
       <a href="{% url 'notification_page' %}">🔔 Notifications</a>
-      <a href="{% url 'Achievementsupervisor' %}">🏆 Achievements</a>
     </div>
   </div>
 
@@ -410,11 +409,7 @@
     <div class="header">
       <h2>Complaints Management</h2>
       <div class="header-actions">
-        <button class="add-btn" onclick="alert('Add new complaint')">
-          <span>➕</span>
-          <span>New Complaint</span>
-        </button>
-        <a href="#" class="back-btn">
+        <a href="{% url 'eo_dashboard' %}" class="back-btn">
           <span>🏠</span>
           <span>Dashboard</span>
         </a>
@@ -513,9 +508,7 @@
               <td>
                 <div class="action-btns">
                   <button class="action-btn btn-view" onclick="viewComplaint({{ complaint.id }})">👁️ View</button>
-                  <button class="action-btn btn-edit" onclick="editComplaint({{ complaint.id }})">✏️ Edit</button>
-                  <button class="action-btn btn-delete" onclick="deleteComplaint({{ complaint.id }})">🗑️ Delete</button>
-                </div>
+                  </div>
               </td>
             </tr>
             {% empty %}
@@ -540,13 +533,6 @@
       {% endif %}
 
       <!-- Pagination -->
-      <div class="pagination">
-        <button class="page-btn" id="prev-btn">← Previous</button>
-        <button class="page-btn active">1</button>
-        <button class="page-btn">2</button>
-        <button class="page-btn">3</button>
-        <button class="page-btn" id="next-btn">Next →</button>
-      </div>
     </div>
   </div>
 
