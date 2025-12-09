@@ -470,7 +470,7 @@
                 <span class="menu-icon">📝</span>
                 <span>Complaints</span>
             </a>
-            <a href="#" class="menu-item">
+            <a href="{% url 'requests_eo' %}" class="menu-item">
                 <span class="menu-icon">📋</span>
                 <span>Requests</span>
             </a>
@@ -562,7 +562,7 @@
         </div>
 
         <!-- Quick Actions -->
-        <div class="quick-actions">
+        <!-- <div class="quick-actions">
             <h3>Quick Actions</h3>
             <div class="actions-grid">
                 <button class="action-btn">
@@ -582,7 +582,7 @@
                     Settings
                 </button>
             </div>
-        </div>
+        </div> -->
 
         <!-- Charts -->
         <div class="charts-grid">
@@ -795,14 +795,14 @@
             }
         });
 
-        // Add click handlers for menu items
-        document.querySelectorAll('.menu-item').forEach(item => {
-            item.addEventListener('click', function(e) {
-                e.preventDefault();
-                document.querySelectorAll('.menu-item').forEach(i => i.classList.remove('active'));
-                this.classList.add('active');
-            });
-        });
+        // // Add click handlers for menu items
+        // document.querySelectorAll('.menu-item').forEach(item => {
+        //     item.addEventListener('click', function(e) {
+        //         e.preventDefault();
+        //         document.querySelectorAll('.menu-item').forEach(i => i.classList.remove('active'));
+        //         this.classList.add('active');
+        //     });
+        // });
     </script>
 </body>
 </html>

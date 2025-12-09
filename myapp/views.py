@@ -760,3 +760,6 @@ def Achievementsupervisor(request):
 def complaints_eo(request):
     complaints = Complaint.objects.all().order_by('-date_time')
     return render(request, 'complaintseo.html', {'complaints': complaints})
+def requests_eo(request):
+    requests = Request.objects.all().order_by('-date_time')
+    return render(request, 'requestseo.html', {'requests': requests})
