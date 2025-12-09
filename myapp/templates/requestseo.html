@@ -74,7 +74,7 @@
       align-items: center;
     }
     .back-btn, .add-btn {
-      background: #3b82f6;
+      background: #1e3a8a;
       color: white;
       padding: 8px 16px;
       border-radius: 8px;
@@ -281,7 +281,7 @@
       width: 40px;
       height: 40px;
       border-radius: 50%;
-      background: linear-gradient(135deg, #10b981, #059669);
+      background: linear-gradient(135deg, #3b82f6, #1e3a8a);
       display: inline-flex;
       align-items: center;
       justify-content: center;
@@ -289,7 +289,6 @@
       font-weight: bold;
       font-size: 16px;
     }
-
     /* Empty State */
     .empty-state {
       text-align: center;
@@ -404,7 +403,7 @@
       <a href="{% url 'eo_dashboard' %}">🏠 Dashboard</a>
       <a href="{% url 'complaints_eo' %}">📝 Complaints</a>
       <a href="{% url 'requests_eo' %}" class="active">📋 Requests</a>
-      <a href="{% url 'notification_page' %}">🔔 Notifications</a>
+      <a href="{% url 'notification_page3' %}">🔔 Notifications</a>
     </div>
   </div>
 
@@ -487,7 +486,7 @@
                 data-type="{{ request.request_type|lower }}" 
                 data-status="{{ request.status|lower }}">
               <td>
-                <div class="profile-initial">{{ request.user.0|upper }}{{ request.user.1|upper }}</div>
+                <div class="profile-initial">{{ request.name.0|upper }}</div>
               </td>
               <td>{{ request.name }}</td>
               <td>{{ request.phone_number }}</td>
@@ -539,6 +538,20 @@
 
     </div>
   </div>
+
+  <!-- <div class="popup-overlay" id="complaintPopup">
+    <div class="popup-card">
+      <div class="popup-header">
+        <h2>📋 Complaint Details</h2>
+        <button class="close-popup" onclick="closePopup()">&times;</button>
+      </div>
+
+      <div class="popup-body">
+        <div class="details-grid" id="popupContent">
+        </div>
+      </div>
+    </div>
+  </div> -->
 
   <script>
     // Filter functionality
@@ -598,51 +611,7 @@
       window.location.href = `/request/view/${id}/`;
     }
 
-    function editRequest(id) {
-      window.location.href = `/request/edit/${id}/`;
-    }
-
-    function deleteRequest(id) {
-      if (confirm(`Are you sure you want to delete request #${id}?`)) {
-        // CSRF token helper
-        function getCookie(name) {
-          let cookieValue = null;
-          if (document.cookie && document.cookie !== '') {
-            const cookies = document.cookie.split(';');
-            for (let i = 0; i < cookies.length; i++) {
-              const cookie = cookies[i].trim();
-              if (cookie.substring(0, name.length + 1) === (name + '=')) {
-                cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
-                break;
-              }
-            }
-          }
-          return cookieValue;
-        }
-        const csrftoken = getCookie('csrftoken');
-
-        fetch(`/request/delete/${id}/`, {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json',
-            'X-CSRFToken': csrftoken
-          }
-        })
-        .then(res => res.json())
-        .then(data => {
-          if (data.success) {
-            alert('Request deleted successfully');
-            location.reload();
-          } else {
-            alert('Failed to delete request');
-          }
-        })
-        .catch(err => {
-          console.error('Error:', err);
-          alert('Network error. Please try again.');
-        });
-      }
-    }
+   
 
     // Pagination
     const pageButtons = document.querySelectorAll('.page-btn:not(#prev-btn):not(#next-btn)');

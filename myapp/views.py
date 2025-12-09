@@ -586,10 +586,12 @@ def notification_page2(request):  # for public or supervisor
     return render(request, "Notificationpublic.html", {'posts': posts})
 def notification_page3(requests): #EO
     usernumber = requests.session.get('eo_number')
-    if not usernumber:
+    print(usernumber)
+    user=EOSignup.objects.get(eo_number=usernumber)
+    if not user:
         return redirect('login4')  # not logged in
 
-    #posts = Post.objects.exclude(deleted_by__icontains=username).order_by('-created_at')
+    posts = Post.objects.exclude(deleted_by__icontains=usernumber).order_by('-created_at')
     return render(requests, "notification_eo.html", {'posts': posts})
 def delete_post(request, post_id):  # Supervisor
     username = request.session.get('supervisor_username')
@@ -622,6 +624,23 @@ def delete_post2(request, post_id):
 
     messages.success(request, "🗑️ Notification deleted successfully!")
     return redirect('notification_page2')
+def delete_post4(request, post_id): #EO
+    usernumber = request.session.get('eo_number')
+    user=EOSignup.objects.get(eo_number=usernumber)
+    if not user:
+        return redirect('loginpage')
+
+    post = get_object_or_404(Post, id=post_id)
+
+    deleted_list = post.deleted_by.split(",") if post.deleted_by else []
+    if usernumber not in deleted_list:
+        deleted_list.append(usernumber)
+        post.deleted_by = ",".join(deleted_list)
+        post.save()
+
+    messages.success(request, "🗑️ Notification deleted successfully!")
+    return redirect('notification_page2')
+        
 def delete_post3(request, post_id): #admin
     username = request.session.get('username')
     if not username:
@@ -688,7 +707,16 @@ def login4(request):
     return render(request, "loginpageeo.html")
 def eo_dashboard(request):
     notification_count = Post.objects.count()
-    return render(request, 'Maineo.html',{'notification_count': notification_count})
+    tot_comp= Complaint.objects.count()
+    tot_req= Request.objects.count()
+    completed_comp= Complaint.objects.filter(status='complete').count()
+    completed_req= Request.objects.filter(status='complete').count()
+    pending_comp= Complaint.objects.filter(status='pending').count()
+    pending_req= Request.objects.filter(status='pending').count()
+    usernumber = request.session.get('eo_number')
+    eos=EOSignup.objects.filter(eo_number=usernumber)
+    return render(request, 'Maineo.html',{'notification_count': notification_count,"eos":eos,"tot_comp":tot_comp,"tot_req":tot_req,"completed_comp":completed_comp,
+    "completed_req":completed_req,"pending_comp":pending_comp,"pending_req":pending_req})
 def eo_signup(request):
     if request.method == "POST":
         emp_number = request.POST.get("emp_number")

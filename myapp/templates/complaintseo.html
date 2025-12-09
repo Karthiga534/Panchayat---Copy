@@ -74,7 +74,7 @@
       align-items: center;
     }
     .back-btn, .add-btn {
-      background: #3b82f6;
+      background: #1e3a8a;
       color: white;
       padding: 8px 16px;
       border-radius: 8px;
@@ -251,24 +251,7 @@
 
     .btn-view:hover {
       background: #bfdbfe;
-    }
-
-    .btn-edit {
-      background: #fef3c7;
-      color: #92400e;
-    }
-
-    .btn-edit:hover {
-      background: #fde68a;
-    }
-
-    .btn-delete {
-      background: #fee2e2;
-      color: #991b1b;
-    }
-
-    .btn-delete:hover {
-      background: #fecaca;
+      transform: translateY(-2px);
     }
 
     /* Profile Initial */
@@ -304,42 +287,146 @@
       font-size: 14px;
     }
 
-    /* Pagination */
-    .pagination {
-      display: flex;
+    /* Popup Overlay */
+    .popup-overlay {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: rgba(0, 0, 0, 0.7);
+      display: none;
       justify-content: center;
       align-items: center;
-      gap: 10px;
+      z-index: 1000;
       padding: 20px;
+      backdrop-filter: blur(4px);
+    }
+
+    .popup-overlay.active {
+      display: flex;
+    }
+
+    /* Popup Card */
+    .popup-card {
       background: white;
+      width: 100%;
+      max-width: 900px;
+      border-radius: 16px;
+      box-shadow: 0 20px 60px rgba(0, 0, 0, 0.4);
+      position: relative;
+      max-height: 90vh;
+      overflow-y: auto;
+      animation: slideUp 0.3s ease-out;
     }
 
-    .page-btn {
-      padding: 8px 14px;
-      border: 1px solid #cbd5e1;
-      background: white;
-      color: #0d3b66;
-      border-radius: 6px;
-      cursor: pointer;
-      font-size: 14px;
-      font-weight: 600;
-      transition: 0.2s;
+    @keyframes slideUp {
+      from {
+        opacity: 0;
+        transform: translateY(30px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
     }
 
-    .page-btn:hover {
-      background: #f1f7ff;
-      border-color: #3b82f6;
-    }
-
-    .page-btn.active {
-      background: #3b82f6;
+    /* Popup Header */
+    .popup-header {
+      background: linear-gradient(135deg, #1e3a8a 0%, #3b82f6 100%);
       color: white;
-      border-color: #3b82f6;
+      padding: 25px 30px;
+      border-radius: 16px 16px 0 0;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
     }
 
-    .page-btn:disabled {
-      opacity: 0.5;
-      cursor: not-allowed;
+    .popup-header h2 {
+      font-size: 24px;
+      font-weight: 600;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .close-popup {
+      background: rgba(255, 255, 255, 0.2);
+      border: none;
+      color: white;
+      width: 36px;
+      height: 36px;
+      border-radius: 50%;
+      font-size: 24px;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: all 0.3s;
+      line-height: 1;
+    }
+
+    .close-popup:hover {
+      background: rgba(255, 255, 255, 0.3);
+      transform: rotate(90deg);
+    }
+
+    /* Popup Body */
+    .popup-body {
+      padding: 30px;
+    }
+
+    /* Two Column Layout */
+    .details-grid {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 25px;
+    }
+
+    .detail-item {
+      padding: 15px;
+      background: #f8fafc;
+      border-radius: 10px;
+      border-left: 3px solid #3b82f6;
+      transition: all 0.3s;
+    }
+
+    .detail-item:hover {
+      background: #f1f7ff;
+      transform: translateX(5px);
+    }
+
+    .detail-label {
+      font-size: 12px;
+      color: #64748b;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      margin-bottom: 6px;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .detail-value {
+      font-size: 15px;
+      color: #0d3b66;
+      font-weight: 500;
+      word-break: break-word;
+    }
+
+    /* Full Width Items */
+    .detail-item.full-width {
+      grid-column: 1 / -1;
+    }
+
+    /* Status Badge in Popup */
+    .popup-status {
+      grid-column: 1 / -1;
+      text-align: center;
+      padding: 15px;
+      background: transparent;
+      border: none;
     }
 
     /* Responsive */
@@ -386,6 +473,24 @@
       thead th, tbody td {
         padding: 10px 8px;
         font-size: 13px;
+      }
+      
+      /* Popup Responsive */
+      .details-grid {
+        grid-template-columns: 1fr;
+      }
+      
+      .popup-card {
+        max-width: 100%;
+        margin: 10px;
+      }
+      
+      .popup-header {
+        padding: 20px;
+      }
+      
+      .popup-body {
+        padding: 20px;
       }
     }
   </style>
@@ -480,9 +585,19 @@
             <tr data-name="{{ complaint.user|lower }}" 
                 data-area="{{ complaint.location|lower }}" 
                 data-type="{{ complaint.complaint_type|lower }}" 
-                data-status="{{ complaint.status|lower }}">
+                data-status="{{ complaint.status|lower }}"
+                data-complaint-id="{{ complaint.id }}"
+                data-complaint-user="{{ complaint.user }}"
+                data-complaint-phone="{{ complaint.phone }}"
+                data-complaint-address="{{ complaint.address }}"
+                data-complaint-location="{{ complaint.location }}"
+                data-complaint-type="{{ complaint.complaint_type }}"
+                data-complaint-supervisor="{{ complaint.supervisor_name }}"
+                data-complaint-status="{{ complaint.status }}"
+                data-complaint-description="{{ complaint.description|default:'' }}"
+                data-complaint-date="{{ complaint.created_at|default:'' }}">
               <td>
-                <div class="profile-initial">{{ complaint.user.0|upper }}{{ complaint.user.1|upper }}</div>
+                <div class="profile-initial">{{ complaint.user.0|upper }}</div>
               </td>
               <td>{{ complaint.user }}</td>
               <td>{{ complaint.phone }}</td>
@@ -507,8 +622,8 @@
               </td>
               <td>
                 <div class="action-btns">
-                  <button class="action-btn btn-view" onclick="viewComplaint({{ complaint.id }})">👁️ View</button>
-                  </div>
+                  <button class="action-btn btn-view" onclick="viewComplaint(this)">👁️ View</button>
+                </div>
               </td>
             </tr>
             {% empty %}
@@ -517,7 +632,7 @@
         </table>
       </div>
 
-      <!-- Empty State (shown when no complaints) -->
+      <!-- Empty State -->
       {% if not complaints %}
       <div class="empty-state" id="empty-state">
         <div class="empty-state-icon">📋</div>
@@ -531,8 +646,22 @@
         <p>No complaints match your current filters.</p>
       </div>
       {% endif %}
+    </div>
+  </div>
 
-      <!-- Pagination -->
+  <!-- Popup Overlay -->
+  <div class="popup-overlay" id="complaintPopup">
+    <div class="popup-card">
+      <div class="popup-header">
+        <h2>📋 Complaint Details</h2>
+        <button class="close-popup" onclick="closePopup()">&times;</button>
+      </div>
+
+      <div class="popup-body">
+        <div class="details-grid" id="popupContent">
+          <!-- Content will be loaded here dynamically -->
+        </div>
+      </div>
     </div>
   </div>
 
@@ -589,64 +718,125 @@
     typeFilter.addEventListener('input', filterTable);
     statusFilter.addEventListener('change', filterTable);
 
-    // Action functions
-    function viewComplaint(id) {
-      window.location.href = `/complaint/view/${id}/`;
-    }
+    // View Complaint Function
+    function viewComplaint(button) {
+      const row = button.closest('tr');
+      
+      // Get all data from the row
+      const complaintData = {
+        id: row.dataset.complaintId,
+        user: row.dataset.complaintUser,
+        phone: row.dataset.complaintPhone,
+        address: row.dataset.complaintAddress,
+        location: row.dataset.complaintLocation,
+        type: row.dataset.complaintType,
+        supervisor: row.dataset.complaintSupervisor,
+        status: row.dataset.complaintStatus,
+        description: row.dataset.complaintDescription,
+        date: row.dataset.complaintDate
+      };
 
-    function editComplaint(id) {
-      window.location.href = `/complaint/edit/${id}/`;
-    }
-
-    function deleteComplaint(id) {
-      if (confirm(`Are you sure you want to delete complaint #${id}?`)) {
-        // CSRF token helper
-        function getCookie(name) {
-          let cookieValue = null;
-          if (document.cookie && document.cookie !== '') {
-            const cookies = document.cookie.split(';');
-            for (let i = 0; i < cookies.length; i++) {
-              const cookie = cookies[i].trim();
-              if (cookie.substring(0, name.length + 1) === (name + '=')) {
-                cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
-                break;
-              }
-            }
-          }
-          return cookieValue;
-        }
-        const csrftoken = getCookie('csrftoken');
-
-        fetch(`/complaint/delete/${id}/`, {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json',
-            'X-CSRFToken': csrftoken
-          }
-        })
-        .then(res => res.json())
-        .then(data => {
-          if (data.success) {
-            alert('Complaint deleted successfully');
-            location.reload();
-          } else {
-            alert('Failed to delete complaint');
-          }
-        })
-        .catch(err => {
-          console.error('Error:', err);
-          alert('Network error. Please try again.');
-        });
+      // Get status badge class
+      let statusClass = 'status-pending';
+      let statusText = complaintData.status;
+      
+      if (complaintData.status === 'verified') {
+        statusClass = 'status-verified';
+        statusText = '✓ Verified';
+      } else if (complaintData.status === 'unverified') {
+        statusClass = 'status-unverified';
+        statusText = '✗ Unverified';
+      } else if (complaintData.status === 'pending') {
+        statusClass = 'status-pending';
+        statusText = '⏳ Pending';
+      } else if (complaintData.status === 'completed') {
+        statusClass = 'status-completed';
+        statusText = '✓ Completed';
+      } else if (complaintData.status === 'rejected') {
+        statusClass = 'status-rejected';
+        statusText = '✗ Rejected';
       }
+
+      // Build popup content
+      const popupContent = `
+        <div class="detail-item popup-status">
+          <span class="status-badge ${statusClass}">${statusText}</span>
+        </div>
+
+        <div class="detail-item">
+          <div class="detail-label">👤 Complaint ID</div>
+          <div class="detail-value">#${complaintData.id}</div>
+        </div>
+
+        <div class="detail-item">
+          <div class="detail-label">📅 Date Submitted</div>
+          <div class="detail-value">${complaintData.date || 'N/A'}</div>
+        </div>
+
+        <div class="detail-item">
+          <div class="detail-label">👨 User Name</div>
+          <div class="detail-value">${complaintData.user}</div>
+        </div>
+
+        <div class="detail-item">
+          <div class="detail-label">📞 Phone Number</div>
+          <div class="detail-value">${complaintData.phone}</div>
+        </div>
+
+        <div class="detail-item">
+          <div class="detail-label">📍 Location/Area</div>
+          <div class="detail-value">${complaintData.location}</div>
+        </div>
+
+        <div class="detail-item">
+          <div class="detail-label">📝 Complaint Type</div>
+          <div class="detail-value">${complaintData.type}</div>
+        </div>
+
+        <div class="detail-item">
+          <div class="detail-label">👷 Assigned Supervisor</div>
+          <div class="detail-value">${complaintData.supervisor}</div>
+        </div>
+
+        <div class="detail-item">
+          <div class="detail-label">📊 Current Status</div>
+          <div class="detail-value">${complaintData.status}</div>
+        </div>
+
+        <div class="detail-item full-width">
+          <div class="detail-label">🏠 Full Address</div>
+          <div class="detail-value">${complaintData.address}</div>
+        </div>
+
+        ${complaintData.description ? `
+        <div class="detail-item full-width">
+          <div class="detail-label">📄 Description</div>
+          <div class="detail-value">${complaintData.description}</div>
+        </div>
+        ` : ''}
+      `;
+
+      // Insert content and show popup
+      document.getElementById('popupContent').innerHTML = popupContent;
+      document.getElementById('complaintPopup').classList.add('active');
     }
 
-    // Pagination
-    const pageButtons = document.querySelectorAll('.page-btn:not(#prev-btn):not(#next-btn)');
-    pageButtons.forEach(btn => {
-      btn.addEventListener('click', function() {
-        pageButtons.forEach(b => b.classList.remove('active'));
-        this.classList.add('active');
-      });
+    function closePopup() {
+      document.getElementById('complaintPopup').classList.remove('active');
+    }
+
+    // Close popup when clicking outside
+    document.getElementById('complaintPopup').addEventListener('click', function(e) {
+      if (e.target === this) {
+        closePopup();
+      }
+    });
+
+    // Close popup with Escape key
+    document.addEventListener('keydown', function(e) {
+      if (e.key === 'Escape') {
+        closePopup();
+      }
     });
   </script>
 

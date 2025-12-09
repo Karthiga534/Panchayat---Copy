@@ -20,41 +20,40 @@
         }
 
         /* Sidebar */
-         /* Sidebar */
-    .sidebar { 
-      width: 240px; 
-      height: 100vh; 
-      background: #1e3a8a; 
-      color: #fff; 
-      padding: 25px 0; 
-      position: fixed; 
-      top: 0; 
-      left: 0;
-      overflow-y: auto;
-    }
-    .sidebar h2 { 
-      text-align: center; 
-      margin-bottom: 20px; 
-      font-size: 22px; 
-      letter-spacing: 1px; 
-      font-weight: bold; 
-    }
-    .menu a { 
-      display: block; 
-      padding: 14px 25px; 
-      color: white; 
-      text-decoration: none; 
-      font-size: 16px; 
-      transition: 0.2s; 
-    }
-    .menu a:hover { 
-      background: #144f8a; 
-      padding-left: 30px; 
-    }
-    .sidebar .active {
-      background: #3b82f6;
-      border-left: 4px solid #ffffff;
-    }
+        .sidebar { 
+            width: 240px; 
+            height: 100vh; 
+            background: #1e3a8a; 
+            color: #fff; 
+            padding: 25px 0; 
+            position: fixed; 
+            top: 0; 
+            left: 0;
+            overflow-y: auto;
+        }
+        .sidebar h2 { 
+            text-align: center; 
+            margin-bottom: 20px; 
+            font-size: 22px; 
+            letter-spacing: 1px; 
+            font-weight: bold; 
+        }
+        .menu a { 
+            display: block; 
+            padding: 14px 25px; 
+            color: white; 
+            text-decoration: none; 
+            font-size: 16px; 
+            transition: 0.2s; 
+        }
+        .menu a:hover { 
+            background: #144f8a; 
+            padding-left: 30px; 
+        }
+        .sidebar .active {
+            background: #3b82f6;
+            border-left: 4px solid #ffffff;
+        }
 
         /* Main Content */
         .main-content {
@@ -110,6 +109,15 @@
             transform: scale(1.05);
         }
 
+        .notification-icon a {
+            text-decoration: none;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            width: 100%;
+            height: 100%;
+        }
+
         .notification-badge {
             position: absolute;
             top: -2px;
@@ -122,43 +130,86 @@
             font-weight: 600;
         }
 
-        .profile-section {
-            display: flex;
-            align-items: center;
-            gap: 12px;
-            cursor: pointer;
-            padding: 8px 15px;
-            border-radius: 8px;
-            transition: all 0.3s;
-        }
-
-        .profile-section:hover {
-            background: #f1f7ff;
-        }
-
-        .profile-name {
-            font-size: 15px;
-            font-weight: 600;
-            color: #0d3b66;
-        }
-
-        .profile-role {
-            font-size: 12px;
-            color: #64748b;
-        }
-
-        .profile-avatar {
+        .profile-icon {
             width: 45px;
             height: 45px;
             border-radius: 50%;
-            background: linear-gradient(135deg, #3b82f6 0%, #1e3a8a 100%);
-            display: flex;
-            align-items: center;
+            overflow: hidden;
+            cursor: pointer;
+            border: 2px solid #3b82f6;
+        }
+        .profile-icon img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        .profile-popup {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0,0,0,0.5);
+            display: none;
             justify-content: center;
+            align-items: center;
+            z-index: 100;
+        }
+
+        .profile-card {
+            background: white;
+            width: 320px;
+            padding: 20px;
+            border-radius: 15px;
+            text-align: center;
+            position: relative;
+            box-shadow: 0 3px 10px rgba(0,0,0,0.3);
+        }
+
+        .close-btn {
+            position: absolute;
+            top: 8px;
+            right: 15px;
+            cursor: pointer;
+            font-size: 22px;
+            font-weight: bold;
+            color: #64748b;
+        }
+
+        .close-btn:hover {
+            color: #ef4444;
+        }
+
+        .profile-card img {
+            width: 110px;
+            height: 110px;
+            border-radius: 50%;
+            border: 3px solid #3b82f6;
+            margin-bottom: 10px;
+            object-fit: cover;
+        }
+
+        .profile-card h3 {
+            color: #0d3b66;
+            margin-bottom: 10px;
+        }
+
+        .logout-btn {
+            background: #ef4444;
             color: white;
-            font-weight: 600;
-            font-size: 18px;
-            border: 2px solid #e0f2fe;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 8px;
+            font-size: 16px;
+            margin-top: 15px;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .logout-btn:hover {
+            background: #dc2626;
+            transform: translateY(-2px);
         }
 
         /* Stats Cards */
@@ -311,51 +362,6 @@
             height: 300px;
         }
 
-        /* Quick Actions */
-        .quick-actions {
-            background: white;
-            padding: 25px;
-            border-radius: 12px;
-            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
-            margin-bottom: 25px;
-        }
-
-        .quick-actions h3 {
-            color: #0d3b66;
-            font-size: 18px;
-            font-weight: 600;
-            margin-bottom: 20px;
-        }
-
-        .actions-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-            gap: 15px;
-        }
-
-        .action-btn {
-            padding: 15px 20px;
-            border: 2px solid #e0f2fe;
-            border-radius: 10px;
-            background: white;
-            color: #1e3a8a;
-            font-size: 14px;
-            font-weight: 600;
-            cursor: pointer;
-            transition: all 0.3s;
-            display: flex;
-            align-items: center;
-            gap: 10px;
-            justify-content: center;
-        }
-
-        .action-btn:hover {
-            background: #1e3a8a;
-            color: white;
-            border-color: #1e3a8a;
-            transform: translateY(-2px);
-        }
-
         /* Responsive */
         @media (max-width: 1200px) {
             .charts-grid {
@@ -395,7 +401,7 @@
                 padding: 10px;
             }
 
-            .menu-item {
+            .menu a {
                 white-space: nowrap;
                 padding: 10px 20px;
             }
@@ -404,16 +410,15 @@
 </head>
 <body>
     <!-- Sidebar -->
-     <!-- Sidebar -->
-  <div class="sidebar">
-    <h2>PANCHAYAT</h2>
-    <div class="menu">
-      <a href="{% url 'eo_dashboard' %}" class="active">🏠 Dashboard</a>
-      <a href="{% url 'complaints_eo' %}">📝 Complaints</a>
-      <a href="{% url 'requests_eo' %}" >📋 Requests</a>
-      <a href="{% url 'notification_page' %}">🔔 Notifications</a>
+    <div class="sidebar">
+        <h2>PANCHAYAT</h2>
+        <div class="menu">
+            <a href="{% url 'eo_dashboard' %}" class="active">🏠 Dashboard</a>
+            <a href="{% url 'complaints_eo' %}">📝 Complaints</a>
+            <a href="{% url 'requests_eo' %}">📋 Requests</a>
+            <a href="{% url 'notification_page3' %}">🔔 Notifications</a>
+        </div>
     </div>
-  </div>
 
     <!-- Main Content -->
     <div class="main-content">
@@ -426,16 +431,43 @@
             <div class="header-right">
                 <div class="notification-icon">
                     <a href="{% url 'notification_page3' %}">
-                    <span>🔔</span></a>
+                        <span>🔔</span>
+                    </a>
                     <span class="notification-badge">{{notification_count}}</span>
                 </div>
-                <div class="profile-section">
-                    <div>
-                        <div class="profile-name">Admin User</div>
-                        <div class="profile-role">Administrator</div>
-                    </div>
-                    <div class="profile-avatar">AU</div>
+                
+                <div class="profile-icon" id="profileTrigger">
+                    {% if user.profile_image %}
+                        <img src="{{ user.profile_image.url }}" alt="Profile">
+                    {% else %}
+                        <img src="https://via.placeholder.com/45" alt="Profile">
+                    {% endif %}
                 </div>
+            </div>
+        </div>
+
+        <!-- Profile Popup -->
+        <div class="profile-popup" id="profilePopup">
+            <div class="profile-card">
+                <span class="close-btn" id="closePopup">&times;</span>
+
+                {% if user.profile_image %}
+                    <img src="{{ user.profile_image.url }}" alt="Profile">
+                {% else %}
+                    <img src="https://via.placeholder.com/110" alt="Profile">
+                {% endif %}
+                {% if eos %}
+        {% for eo in eos %}
+        <h3>{{ eo.eo_name }}</h3>
+        <h4>{{eo.area}}</h4><br>
+        <p>📞 {{ eo.phone }}</p>
+        <p>🏠 {{ eo.address }}</p>
+
+        <a href="{% url 'logout4' %}">
+            <button class="logout-btn">Logout</button>
+        </a>
+    {% endfor %}
+{% endif %}
             </div>
         </div>
 
@@ -444,8 +476,8 @@
             <div class="stat-card blue">
                 <div class="stat-info">
                     <h3>Total Complaints</h3>
-                    <div class="number">247</div>
-                    <div class="trend up">↑ 12% from last month</div>
+                    <div class="number">{{tot_comp}}</div>
+                    <div class="trend up">↑ {{complaints_trend|default:"0"}}% from last month</div>
                 </div>
                 <div class="stat-icon">📝</div>
             </div>
@@ -453,8 +485,8 @@
             <div class="stat-card purple">
                 <div class="stat-info">
                     <h3>Total Requests</h3>
-                    <div class="number">189</div>
-                    <div class="trend up">↑ 8% from last month</div>
+                    <div class="number">{{tot_req}}</div>
+                    <div class="trend up">↑ {{requests_trend|default:"0"}}% from last month</div>
                 </div>
                 <div class="stat-icon">📋</div>
             </div>
@@ -462,8 +494,8 @@
             <div class="stat-card green">
                 <div class="stat-info">
                     <h3>Completed Complaints</h3>
-                    <div class="number">185</div>
-                    <div class="trend up">↑ 15% from last month</div>
+                    <div class="number">{{completed_comp}}</div>
+                    <div class="trend up">↑ {{completed_complaints_trend|default:"0"}}% from last month</div>
                 </div>
                 <div class="stat-icon">✅</div>
             </div>
@@ -471,8 +503,8 @@
             <div class="stat-card orange">
                 <div class="stat-info">
                     <h3>Pending Complaints</h3>
-                    <div class="number">62</div>
-                    <div class="trend down">↓ 5% from last month</div>
+                    <div class="number">{{pending_comp}}</div>
+                    <div class="trend down">↓ {{pending_complaints_trend|default:"0"}}% from last month</div>
                 </div>
                 <div class="stat-icon">⏳</div>
             </div>
@@ -480,8 +512,8 @@
             <div class="stat-card cyan">
                 <div class="stat-info">
                     <h3>Completed Requests</h3>
-                    <div class="number">142</div>
-                    <div class="trend up">↑ 10% from last month</div>
+                    <div class="number">{{completed_req}}</div>
+                    <div class="trend up">↑ {{completed_requests_trend|default:"0"}}% from last month</div>
                 </div>
                 <div class="stat-icon">✓</div>
             </div>
@@ -489,255 +521,295 @@
             <div class="stat-card red">
                 <div class="stat-info">
                     <h3>Pending Requests</h3>
-                    <div class="number">47</div>
-                    <div class="trend down">↓ 3% from last month</div>
+                    <div class="number">{{pending_req}}</div>
+                    <div class="trend down">↓ {{pending_requests_trend|default:"0"}}% from last month</div>
                 </div>
                 <div class="stat-icon">⌛</div>
             </div>
         </div>
 
-        <!-- Quick Actions -->
-        <!-- <div class="quick-actions">
-            <h3>Quick Actions</h3>
-            <div class="actions-grid">
-                <button class="action-btn">
-                    <span>➕</span>
-                    New Complaint
-                </button>
-                <button class="action-btn">
-                    <span>➕</span>
-                    New Request
-                </button>
-                <button class="action-btn">
-                    <span>📊</span>
-                    View Reports
-                </button>
-                <button class="action-btn">
-                    <span>⚙️</span>
-                    Settings
-                </button>
-            </div>
-        </div> -->
-
         <!-- Charts -->
         <div class="charts-grid">
+            <!-- Doughnut Chart - Overall Status -->
             <div class="chart-card">
                 <div class="chart-header">
-                    <h3>Complaints & Requests Status</h3>
-                </div>
-                <div class="chart-container">
-                    <canvas id="pieChart"></canvas>
-                </div>
-            </div>
-
-            <div class="chart-card">
-                <div class="chart-header">
-                    <h3>Monthly Trend</h3>
-                </div>
-                <div class="chart-container">
-                    <canvas id="lineChart"></canvas>
-                </div>
-            </div>
-
-            <div class="chart-card">
-                <div class="chart-header">
-                    <h3>Completion Rate Comparison</h3>
-                </div>
-                <div class="chart-container">
-                    <canvas id="barChart"></canvas>
-                </div>
-            </div>
-
-            <div class="chart-card">
-                <div class="chart-header">
-                    <h3>Status Distribution</h3>
+                    <h3>Overall Status Distribution</h3>
                 </div>
                 <div class="chart-container">
                     <canvas id="doughnutChart"></canvas>
+                </div>
+            </div>
+
+            <!-- Bar Chart - Complaints Status -->
+            <div class="chart-card">
+                <div class="chart-header">
+                    <h3>Complaints Status</h3>
+                </div>
+                <div class="chart-container">
+                    <canvas id="complaintsBarChart"></canvas>
+                </div>
+            </div>
+
+            <!-- Bar Chart - Requests Status -->
+            <div class="chart-card">
+                <div class="chart-header">
+                    <h3>Requests Status</h3>
+                </div>
+                <div class="chart-container">
+                    <canvas id="requestsBarChart"></canvas>
+                </div>
+            </div>
+
+            <!-- Polar Area Chart - Combined Overview -->
+            <div class="chart-card">
+                <div class="chart-header">
+                    <h3>Combined Overview</h3>
+                </div>
+                <div class="chart-container">
+                    <canvas id="polarChart"></canvas>
                 </div>
             </div>
         </div>
     </div>
 
     <script>
-        // Pie Chart - Complaints & Requests Status
-        const pieCtx = document.getElementById('pieChart').getContext('2d');
-        new Chart(pieCtx, {
-            type: 'pie',
-            data: {
-                labels: ['Completed Complaints', 'Pending Complaints', 'Completed Requests', 'Pending Requests'],
-                datasets: [{
-                    data: [185, 62, 142, 47],
-                    backgroundColor: [
-                        '#10b981',
-                        '#f59e0b',
-                        '#06b6d4',
-                        '#ef4444'
-                    ],
-                    borderWidth: 2,
-                    borderColor: '#fff'
-                }]
-            },
-            options: {
-                responsive: true,
-                maintainAspectRatio: false,
-                plugins: {
-                    legend: {
-                        position: 'bottom',
-                        labels: {
-                            padding: 15,
-                            font: {
-                                size: 12
+        // Profile Popup functionality
+        const profileTrigger = document.getElementById("profileTrigger");
+        const profilePopup = document.getElementById("profilePopup");
+        const closePopup = document.getElementById("closePopup");
+
+        if (profileTrigger && profilePopup && closePopup) {
+            profileTrigger.onclick = () => profilePopup.style.display = "flex";
+            closePopup.onclick = () => profilePopup.style.display = "none";
+            
+            // Close popup when clicking outside
+            profilePopup.onclick = (e) => {
+                if (e.target === profilePopup) {
+                    profilePopup.style.display = "none";
+                }
+            };
+        }
+
+        // Get data from Django template or use defaults
+        const completedComp = {{completed_comp|default:0}};
+        const pendingComp = {{pending_comp|default:0}};
+        const completedReq = {{completed_req|default:0}};
+        const pendingReq = {{pending_req|default:0}};
+
+        // Doughnut Chart - Overall Status Distribution
+        const doughnutCtx = document.getElementById('doughnutChart');
+        if (doughnutCtx) {
+            new Chart(doughnutCtx.getContext('2d'), {
+                type: 'doughnut',
+                data: {
+                    labels: ['Completed Complaints', 'Pending Complaints', 'Completed Requests', 'Pending Requests'],
+                    datasets: [{
+                        data: [completedComp, pendingComp, completedReq, pendingReq],
+                        backgroundColor: [
+                            '#10b981',
+                            '#f59e0b',
+                            '#06b6d4',
+                            '#ef4444'
+                        ],
+                        borderWidth: 3,
+                        borderColor: '#fff'
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: {
+                            position: 'bottom',
+                            labels: {
+                                padding: 15,
+                                font: {
+                                    size: 12
+                                }
+                            }
+                        },
+                        tooltip: {
+                            callbacks: {
+                                label: function(context) {
+                                    let label = context.label || '';
+                                    if (label) {
+                                        label += ': ';
+                                    }
+                                    label += context.parsed;
+                                    const total = context.dataset.data.reduce((a, b) => a + b, 0);
+                                    const percentage = ((context.parsed / total) * 100).toFixed(1);
+                                    label += ' (' + percentage + '%)';
+                                    return label;
+                                }
                             }
                         }
                     }
                 }
-            }
-        });
+            });
+        }
 
-        // Line Chart - Monthly Trend
-        const lineCtx = document.getElementById('lineChart').getContext('2d');
-        new Chart(lineCtx, {
-            type: 'line',
-            data: {
-                labels: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'],
-                datasets: [{
-                    label: 'Complaints',
-                    data: [65, 59, 80, 81, 76, 85, 90, 95, 88, 92, 98, 105],
-                    borderColor: '#3b82f6',
-                    backgroundColor: 'rgba(59, 130, 246, 0.1)',
-                    tension: 0.4,
-                    fill: true
-                }, {
-                    label: 'Requests',
-                    data: [45, 48, 60, 65, 58, 70, 75, 78, 72, 80, 85, 90],
-                    borderColor: '#8b5cf6',
-                    backgroundColor: 'rgba(139, 92, 246, 0.1)',
-                    tension: 0.4,
-                    fill: true
-                }]
-            },
-            options: {
-                responsive: true,
-                maintainAspectRatio: false,
-                plugins: {
-                    legend: {
-                        position: 'top',
-                        labels: {
-                            padding: 15,
-                            font: {
-                                size: 12
-                            }
-                        }
-                    }
+        // Bar Chart - Complaints Status
+        const complaintsBarCtx = document.getElementById('complaintsBarChart');
+        if (complaintsBarCtx) {
+            new Chart(complaintsBarCtx.getContext('2d'), {
+                type: 'bar',
+                data: {
+                    labels: ['Completed', 'Pending'],
+                    datasets: [{
+                        label: 'Complaints',
+                        data: [completedComp, pendingComp],
+                        backgroundColor: [
+                            '#10b981',
+                            '#f59e0b'
+                        ],
+                        borderRadius: 8,
+                        barThickness: 60
+                    }]
                 },
-                scales: {
-                    y: {
-                        beginAtZero: true,
-                        grid: {
-                            color: 'rgba(0, 0, 0, 0.05)'
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: {
+                            display: false
+                        },
+                        tooltip: {
+                            callbacks: {
+                                label: function(context) {
+                                    return 'Count: ' + context.parsed.y;
+                                }
+                            }
                         }
                     },
-                    x: {
-                        grid: {
-                            display: false
-                        }
-                    }
-                }
-            }
-        });
-
-        // Bar Chart - Completion Rate
-        const barCtx = document.getElementById('barChart').getContext('2d');
-        new Chart(barCtx, {
-            type: 'bar',
-            data: {
-                labels: ['Week 1', 'Week 2', 'Week 3', 'Week 4'],
-                datasets: [{
-                    label: 'Complaints Completed',
-                    data: [45, 52, 48, 40],
-                    backgroundColor: '#10b981',
-                    borderRadius: 6
-                }, {
-                    label: 'Requests Completed',
-                    data: [38, 42, 35, 27],
-                    backgroundColor: '#06b6d4',
-                    borderRadius: 6
-                }]
-            },
-            options: {
-                responsive: true,
-                maintainAspectRatio: false,
-                plugins: {
-                    legend: {
-                        position: 'top',
-                        labels: {
-                            padding: 15,
-                            font: {
-                                size: 12
+                    scales: {
+                        y: {
+                            beginAtZero: true,
+                            grid: {
+                                color: 'rgba(0, 0, 0, 0.05)'
+                            },
+                            ticks: {
+                                stepSize: 1
+                            }
+                        },
+                        x: {
+                            grid: {
+                                display: false
                             }
                         }
                     }
+                }
+            });
+        }
+
+        // Bar Chart - Requests Status
+        const requestsBarCtx = document.getElementById('requestsBarChart');
+        if (requestsBarCtx) {
+            new Chart(requestsBarCtx.getContext('2d'), {
+                type: 'bar',
+                data: {
+                    labels: ['Completed', 'Pending'],
+                    datasets: [{
+                        label: 'Requests',
+                        data: [completedReq, pendingReq],
+                        backgroundColor: [
+                            '#06b6d4',
+                            '#ef4444'
+                        ],
+                        borderRadius: 8,
+                        barThickness: 60
+                    }]
                 },
-                scales: {
-                    y: {
-                        beginAtZero: true,
-                        grid: {
-                            color: 'rgba(0, 0, 0, 0.05)'
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: {
+                            display: false
+                        },
+                        tooltip: {
+                            callbacks: {
+                                label: function(context) {
+                                    return 'Count: ' + context.parsed.y;
+                                }
+                            }
                         }
                     },
-                    x: {
-                        grid: {
-                            display: false
-                        }
-                    }
-                }
-            }
-        });
-
-        // Doughnut Chart - Status Distribution
-        const doughnutCtx = document.getElementById('doughnutChart').getContext('2d');
-        new Chart(doughnutCtx, {
-            type: 'doughnut',
-            data: {
-                labels: ['Resolved', 'In Progress', 'Pending Review', 'Closed'],
-                datasets: [{
-                    data: [220, 65, 44, 107],
-                    backgroundColor: [
-                        '#10b981',
-                        '#3b82f6',
-                        '#f59e0b',
-                        '#64748b'
-                    ],
-                    borderWidth: 2,
-                    borderColor: '#fff'
-                }]
-            },
-            options: {
-                responsive: true,
-                maintainAspectRatio: false,
-                plugins: {
-                    legend: {
-                        position: 'bottom',
-                        labels: {
-                            padding: 15,
-                            font: {
-                                size: 12
+                    scales: {
+                        y: {
+                            beginAtZero: true,
+                            grid: {
+                                color: 'rgba(0, 0, 0, 0.05)'
+                            },
+                            ticks: {
+                                stepSize: 1
+                            }
+                        },
+                        x: {
+                            grid: {
+                                display: false
                             }
                         }
                     }
                 }
-            }
-        });
+            });
+        }
 
-        // // Add click handlers for menu items
-        // document.querySelectorAll('.menu-item').forEach(item => {
-        //     item.addEventListener('click', function(e) {
-        //         e.preventDefault();
-        //         document.querySelectorAll('.menu-item').forEach(i => i.classList.remove('active'));
-        //         this.classList.add('active');
-        //     });
-        // });
+        // Polar Area Chart - Combined Overview
+        const polarCtx = document.getElementById('polarChart');
+        if (polarCtx) {
+            new Chart(polarCtx.getContext('2d'), {
+                type: 'polarArea',
+                data: {
+                    labels: ['Completed Complaints', 'Pending Complaints', 'Completed Requests', 'Pending Requests'],
+                    datasets: [{
+                        data: [completedComp, pendingComp, completedReq, pendingReq],
+                        backgroundColor: [
+                            'rgba(16, 185, 129, 0.7)',
+                            'rgba(245, 158, 11, 0.7)',
+                            'rgba(6, 182, 212, 0.7)',
+                            'rgba(239, 68, 68, 0.7)'
+                        ],
+                        borderWidth: 2,
+                        borderColor: '#fff'
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: {
+                            position: 'bottom',
+                            labels: {
+                                padding: 15,
+                                font: {
+                                    size: 12
+                                }
+                            }
+                        },
+                        tooltip: {
+                            callbacks: {
+                                label: function(context) {
+                                    let label = context.label || '';
+                                    if (label) {
+                                        label += ': ';
+                                    }
+                                    label += context.parsed.r;
+                                    return label;
+                                }
+                            }
+                        }
+                    },
+                    scales: {
+                        r: {
+                            beginAtZero: true,
+                            ticks: {
+                                stepSize: 1
+                            }
+                        }
+                    }
+                }
+            });
+        }
     </script>
 </body>
 </html>
