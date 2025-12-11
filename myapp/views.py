@@ -94,7 +94,7 @@ def loginpage(request):
             new_det = Login(username=user.username, phoneno=phoneno, password=password, role="public")
             new_det.save()
 
-            messages.success(request, "✅ Login Successful!")
+            #essages.success(request, "✅ Login Successful!")
 
             # ✅ Redirect to Mainpage view instead of rendering directly
             return redirect('Mainpage')  # 'mainpage' should be the URL name of your Mainpage view
@@ -577,22 +577,31 @@ def notification_page(request):  # Supervisor
     return render(request, "Notificationpage.html", {'posts': posts})
 
 
-def notification_page2(request):  # for public or supervisor
+def notification_page2(request):  # for public 
     username = request.session.get('username')
     if not username:
         return redirect('loginpage')  # not logged in
 
     posts = Post.objects.exclude(deleted_by__icontains=username).order_by('-created_at')
     return render(request, "Notificationpublic.html", {'posts': posts})
-def notification_page3(requests): #EO
-    usernumber = requests.session.get('eo_number')
+def notification_page3(request):  # EO
+    usernumber = request.session.get('eo_number')
     print(usernumber)
-    user=EOSignup.objects.get(eo_number=usernumber)
-    if not user:
-        return redirect('login4')  # not logged in
 
-    posts = Post.objects.exclude(deleted_by__icontains=usernumber).order_by('-created_at')
-    return render(requests, "notification_eo.html", {'posts': posts})
+    if not usernumber:
+        return redirect('login4')
+
+    try:
+        user = EOSignup.objects.get(eo_number=usernumber)
+    except EOSignup.DoesNotExist:
+        return redirect('login4')
+
+    posts = Post.objects.exclude(
+        deleted_by__regex=rf'(^|,){usernumber}(,|$)'
+    ).order_by('-created_at')
+
+    return render(request, "notification_eo.html", {'posts': posts})
+
 def delete_post(request, post_id):  # Supervisor
     username = request.session.get('supervisor_username')
     if not username:
@@ -624,22 +633,23 @@ def delete_post2(request, post_id):
 
     messages.success(request, "🗑️ Notification deleted successfully!")
     return redirect('notification_page2')
-def delete_post4(request, post_id): #EO
+def delete_post4(request, post_id):  # EO
     usernumber = request.session.get('eo_number')
-    user=EOSignup.objects.get(eo_number=usernumber)
-    if not user:
-        return redirect('loginpage')
+
+    if not usernumber:
+        return redirect('login4')
 
     post = get_object_or_404(Post, id=post_id)
 
     deleted_list = post.deleted_by.split(",") if post.deleted_by else []
+
     if usernumber not in deleted_list:
         deleted_list.append(usernumber)
         post.deleted_by = ",".join(deleted_list)
         post.save()
 
     messages.success(request, "🗑️ Notification deleted successfully!")
-    return redirect('notification_page2')
+    return redirect('notification_page3')
         
 def delete_post3(request, post_id): #admin
     username = request.session.get('username')

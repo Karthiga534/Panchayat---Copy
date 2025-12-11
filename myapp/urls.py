@@ -43,6 +43,7 @@ urlpatterns = [
     path('notificationspublic/', views.notification_page2, name='notification_page2'),
     path('notificationeo/', views.notification_page3, name='notification_page3'),
     path('delete-post3/<int:post_id>/', views.delete_post3, name='delete_post3'),
+    path('delte-post4/<int:post_id>/', views.delete_post4, name='delete_post4'),
     path('notificationspublic/delete2/<int:post_id>/', views.delete_post2, name='delete_post2'),
     path('toggle-status/<int:complaint_id>/', views.toggle_status, name='toggle_status'),
     path("trackstatus/", views.Trackstatus, name="Trackstatus"), 

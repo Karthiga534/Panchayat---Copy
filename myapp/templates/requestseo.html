@@ -256,6 +256,7 @@
 
     .btn-view:hover {
       background: #bfdbfe;
+      transform: translateY(-2px);
     }
 
     .btn-edit {
@@ -289,6 +290,7 @@
       font-weight: bold;
       font-size: 16px;
     }
+
     /* Empty State */
     .empty-state {
       text-align: center;
@@ -308,42 +310,198 @@
       font-size: 14px;
     }
 
-    /* Pagination */
-    .pagination {
-      display: flex;
+    /* Popup Overlay */
+    .popup-overlay {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: rgba(0, 0, 0, 0.6);
+      backdrop-filter: blur(4px);
+      display: none;
       justify-content: center;
       align-items: center;
-      gap: 10px;
-      padding: 20px;
-      background: white;
+      z-index: 9999;
+      animation: fadeIn 0.3s ease;
     }
 
-    .page-btn {
-      padding: 8px 14px;
-      border: 1px solid #cbd5e1;
+    .popup-overlay.show {
+      display: flex;
+    }
+
+    @keyframes fadeIn {
+      from {
+        opacity: 0;
+      }
+      to {
+        opacity: 1;
+      }
+    }
+
+    @keyframes slideUp {
+      from {
+        transform: translateY(30px);
+        opacity: 0;
+      }
+      to {
+        transform: translateY(0);
+        opacity: 1;
+      }
+    }
+
+    /* Popup Card */
+    .popup-card {
       background: white;
-      color: #0d3b66;
-      border-radius: 6px;
+      border-radius: 16px;
+      width: 90%;
+      max-width: 800px;
+      max-height: 90vh;
+      overflow: hidden;
+      box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+      animation: slideUp 0.3s ease;
+      display: flex;
+      flex-direction: column;
+    }
+
+    /* Popup Header */
+    .popup-header {
+      background: linear-gradient(135deg, #1e3a8a 0%, #3b82f6 100%);
+      color: white;
+      padding: 24px 30px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      border-bottom: 3px solid #60a5fa;
+    }
+
+    .popup-header h2 {
+      font-size: 24px;
+      font-weight: 700;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .close-popup {
+      background: rgba(255, 255, 255, 0.2);
+      border: none;
+      color: white;
+      width: 36px;
+      height: 36px;
+      border-radius: 50%;
+      font-size: 24px;
       cursor: pointer;
-      font-size: 14px;
-      font-weight: 600;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: 0.2s;
+      font-weight: 300;
+    }
+
+    .close-popup:hover {
+      background: rgba(255, 255, 255, 0.3);
+      transform: rotate(90deg);
+    }
+
+    /* Popup Body */
+    .popup-body {
+      padding: 30px;
+      overflow-y: auto;
+      flex: 1;
+    }
+
+    /* Details Grid */
+    .details-grid {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 20px;
+    }
+
+    .detail-item {
+      background: #f8fafc;
+      padding: 18px;
+      border-radius: 10px;
+      border-left: 4px solid #3b82f6;
       transition: 0.2s;
     }
 
-    .page-btn:hover {
-      background: #f1f7ff;
-      border-color: #3b82f6;
+    .detail-item:hover {
+      background: #eff6ff;
+      transform: translateX(5px);
     }
 
-    .page-btn.active {
+    .detail-label {
+      font-size: 13px;
+      color: #64748b;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      margin-bottom: 8px;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .detail-value {
+      font-size: 16px;
+      color: #0f172a;
+      font-weight: 600;
+      word-wrap: break-word;
+    }
+
+    .detail-item.full-width {
+      grid-column: 1 / -1;
+    }
+
+    /* Status in Popup */
+    .popup-status {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 8px 16px;
+      border-radius: 20px;
+      font-size: 14px;
+      font-weight: 600;
+    }
+
+    /* Popup Footer */
+    .popup-footer {
+      padding: 20px 30px;
+      background: #f8fafc;
+      border-top: 1px solid #e2e8f0;
+      display: flex;
+      justify-content: flex-end;
+      gap: 12px;
+    }
+
+    .popup-btn {
+      padding: 10px 24px;
+      border: none;
+      border-radius: 8px;
+      font-size: 14px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: 0.2s;
+    }
+
+    .btn-close {
+      background: #e2e8f0;
+      color: #334155;
+    }
+
+    .btn-close:hover {
+      background: #cbd5e1;
+    }
+
+    .btn-edit-popup {
       background: #3b82f6;
       color: white;
-      border-color: #3b82f6;
     }
 
-    .page-btn:disabled {
-      opacity: 0.5;
-      cursor: not-allowed;
+    .btn-edit-popup:hover {
+      background: #2563eb;
+      transform: translateY(-2px);
     }
 
     /* Responsive */
@@ -390,6 +548,41 @@
       thead th, tbody td {
         padding: 10px 8px;
         font-size: 13px;
+      }
+
+      .popup-card {
+        width: 95%;
+        max-height: 95vh;
+      }
+
+      .popup-header {
+        padding: 20px;
+      }
+
+      .popup-header h2 {
+        font-size: 20px;
+      }
+
+      .popup-body {
+        padding: 20px;
+      }
+
+      .details-grid {
+        grid-template-columns: 1fr;
+        gap: 15px;
+      }
+
+      .detail-item.full-width {
+        grid-column: 1;
+      }
+
+      .popup-footer {
+        padding: 15px 20px;
+        flex-direction: column;
+      }
+
+      .popup-btn {
+        width: 100%;
       }
     }
   </style>
@@ -484,7 +677,11 @@
             <tr data-name="{{ request.name|lower }}" 
                 data-area="{{ request.area|lower }}" 
                 data-type="{{ request.request_type|lower }}" 
-                data-status="{{ request.status|lower }}">
+                data-status="{{ request.status|lower }}"
+                data-id="{{ request.id }}"
+                data-phone="{{ request.phone_number }}"
+                data-address="{{ request.address }}"
+                data-supervisor="{{ request.supervisor_name }}">
               <td>
                 <div class="profile-initial">{{ request.name.0|upper }}</div>
               </td>
@@ -511,7 +708,7 @@
               </td>
               <td>
                 <div class="action-btns">
-                  <button class="action-btn btn-view" onclick="viewRequest({{ request.id }})">👁️ View</button>
+                  <button class="action-btn btn-view" onclick="viewRequest(this)">👁️ View</button>
                 </div>
               </td>
             </tr>
@@ -521,7 +718,7 @@
         </table>
       </div>
 
-      <!-- Empty State (shown when no requests) -->
+      <!-- Empty State -->
       {% if not requests %}
       <div class="empty-state" id="empty-state">
         <div class="empty-state-icon">📋</div>
@@ -539,19 +736,26 @@
     </div>
   </div>
 
-  <!-- <div class="popup-overlay" id="complaintPopup">
+  <!-- Popup Overlay -->
+  <div class="popup-overlay" id="requestPopup">
     <div class="popup-card">
       <div class="popup-header">
-        <h2>📋 Complaint Details</h2>
+        <h2>📋 Request Details</h2>
         <button class="close-popup" onclick="closePopup()">&times;</button>
       </div>
 
       <div class="popup-body">
         <div class="details-grid" id="popupContent">
+          <!-- Content will be dynamically inserted here -->
         </div>
       </div>
+
+      <div class="popup-footer">
+        <button class="popup-btn btn-close" onclick="closePopup()">Close</button>
+        <button class="popup-btn btn-edit-popup" onclick="editRequest()">✏️ Edit Request</button>
+      </div>
     </div>
-  </div> -->
+  </div>
 
   <script>
     // Filter functionality
@@ -606,20 +810,101 @@
     typeFilter.addEventListener('input', filterTable);
     statusFilter.addEventListener('change', filterTable);
 
-    // Action functions
-    function viewRequest(id) {
-      window.location.href = `/request/view/${id}/`;
+    // Store current request ID for edit
+    let currentRequestId = null;
+
+    // View Request - Open Popup
+    function viewRequest(button) {
+      const row = button.closest('tr');
+      const requestId = row.getAttribute('data-id');
+      const name = row.querySelector('td:nth-child(2)').textContent;
+      const phone = row.getAttribute('data-phone');
+      const address = row.getAttribute('data-address');
+      const area = row.getAttribute('data-area');
+      const requestType = row.getAttribute('data-type');
+      const supervisor = row.getAttribute('data-supervisor');
+      const status = row.getAttribute('data-status');
+      
+      // Store for edit function
+      currentRequestId = requestId;
+
+      // Get status badge HTML
+      const statusBadge = row.querySelector('.status-badge').cloneNode(true);
+      
+      // Build popup content
+      const popupContent = document.getElementById('popupContent');
+      popupContent.innerHTML = `
+        <div class="detail-item">
+          <div class="detail-label">👤 Name</div>
+          <div class="detail-value">${name}</div>
+        </div>
+        
+        <div class="detail-item">
+          <div class="detail-label">📞 Phone Number</div>
+          <div class="detail-value">${phone}</div>
+        </div>
+        
+        <div class="detail-item">
+          <div class="detail-label">📍 Area</div>
+          <div class="detail-value">${area}</div>
+        </div>
+        
+        <div class="detail-item">
+          <div class="detail-label">📝 Request Type</div>
+          <div class="detail-value">${requestType}</div>
+        </div>
+        
+        <div class="detail-item">
+          <div class="detail-label">👨‍💼 Supervisor</div>
+          <div class="detail-value">${supervisor}</div>
+        </div>
+        
+        <div class="detail-item">
+          <div class="detail-label">📊 Status</div>
+          <div class="detail-value">${statusBadge.outerHTML}</div>
+        </div>
+        
+        <div class="detail-item full-width">
+          <div class="detail-label">🏠 Address</div>
+          <div class="detail-value">${address}</div>
+        </div>
+        
+        <div class="detail-item full-width">
+          <div class="detail-label">🆔 Request ID</div>
+          <div class="detail-value">#${requestId}</div>
+        </div>
+      `;
+
+      // Show popup
+      document.getElementById('requestPopup').classList.add('show');
+      document.body.style.overflow = 'hidden';
     }
 
-   
+    // Close Popup
+    function closePopup() {
+      document.getElementById('requestPopup').classList.remove('show');
+      document.body.style.overflow = 'auto';
+    }
 
-    // Pagination
-    const pageButtons = document.querySelectorAll('.page-btn:not(#prev-btn):not(#next-btn)');
-    pageButtons.forEach(btn => {
-      btn.addEventListener('click', function() {
-        pageButtons.forEach(b => b.classList.remove('active'));
-        this.classList.add('active');
-      });
+    // Edit Request
+    function editRequest() {
+      if (currentRequestId) {
+        window.location.href = `/request/edit/${currentRequestId}/`;
+      }
+    }
+
+    // Close popup when clicking outside
+    document.getElementById('requestPopup').addEventListener('click', function(e) {
+      if (e.target === this) {
+        closePopup();
+      }
+    });
+
+    // Close popup with Escape key
+    document.addEventListener('keydown', function(e) {
+      if (e.key === 'Escape') {
+        closePopup();
+      }
     });
   </script>
 
