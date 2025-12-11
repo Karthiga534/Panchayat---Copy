@@ -133,9 +133,15 @@
             font-weight: 500;
         }
 
+        .required {
+            color: #ef4444;
+            margin-left: 2px;
+        }
+
         input[type="email"],
         input[type="number"],
-        input[type="password"] {
+        input[type="password"],
+        input[type="text"] {
             width: 100%;
             padding: 12px 15px;
             border: 2px solid #cbd5e1;
@@ -146,7 +152,8 @@
 
         input[type="email"]:focus,
         input[type="number"]:focus,
-        input[type="password"]:focus {
+        input[type="password"]:focus,
+        input[type="text"]:focus {
             outline: none;
             border-color: #3b82f6;
             box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
@@ -155,11 +162,18 @@
         /* Error state for inputs */
         input.error {
             border-color: #ef4444;
+            background-color: #fef2f2;
         }
 
         input.error:focus {
             border-color: #ef4444;
             box-shadow: 0 0 0 3px rgba(239, 68, 68, 0.1);
+        }
+
+        /* Success state for inputs */
+        input.success {
+            border-color: #10b981;
+            background-color: #f0fdf4;
         }
 
         /* Error message styling */
@@ -171,6 +185,10 @@
             align-items: center;
             gap: 5px;
             animation: slideDown 0.3s ease-out;
+            background-color: #fef2f2;
+            padding: 8px 12px;
+            border-radius: 4px;
+            border-left: 3px solid #ef4444;
         }
 
         .error-message::before {
@@ -187,6 +205,36 @@
                 opacity: 1;
                 transform: translateY(0);
             }
+        }
+
+        /* Success alert */
+        .alert-success {
+            background-color: #dcfce7;
+            border: 1px solid #10b981;
+            border-radius: 6px;
+            padding: 12px 15px;
+            margin-bottom: 20px;
+            color: #065f46;
+            font-size: 14px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            animation: slideDown 0.3s ease-out;
+        }
+
+        .alert-success::before {
+            content: '✓';
+            background: #10b981;
+            color: white;
+            width: 20px;
+            height: 20px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 12px;
+            font-weight: bold;
+            flex-shrink: 0;
         }
 
         /* General error alert */
@@ -254,6 +302,10 @@
         .login-btn:hover {
             transform: translateY(-2px);
             box-shadow: 0 6px 20px rgba(30, 58, 138, 0.4);
+        }
+
+        .login-btn:active {
+            transform: translateY(0);
         }
 
         .forgot-password {
@@ -442,18 +494,25 @@
             <form class="login-form" method="POST" action="{% url 'loginpage' %}">
               {% csrf_token %}
               
+              <!-- Success Message -->
+              {% if success_message %}
+                  <div class="alert-success">
+                      {{ success_message }}
+                  </div>
+              {% endif %}
+
               <!-- General Error Alert -->
-              {% if messages %}
-                  {% for message in messages %}
-                      <div class="alert-error">
-                          {{ message }}
-                      </div>
-                  {% endfor %}
+              {% if general_error %}
+                  <div class="alert-error">
+                      {{ general_error }}
+                  </div>
               {% endif %}
 
                 <div class="form-group">
-                    <label for="phoneno">Phone Number</label>
-                    <input type="number" 
+                    <label for="phoneno">
+                        Phone Number <span class="required">*</span>
+                    </label>
+                    <input type="text" 
                            id="phoneno"
                            name="phoneno" 
                            placeholder="Enter your Phone number" 
@@ -466,7 +525,9 @@
                 </div>
 
                 <div class="form-group">
-                    <label for="password">Password</label>
+                    <label for="password">
+                        Password <span class="required">*</span>
+                    </label>
                     <input type="password" 
                            id="password"
                            name="password" 

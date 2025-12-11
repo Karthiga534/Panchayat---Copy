@@ -94,7 +94,7 @@ def loginpage(request):
             new_det = Login(username=user.username, phoneno=phoneno, password=password, role="public")
             new_det.save()
 
-            #essages.success(request, "✅ Login Successful!")
+            messages.success(request, "✅ Login Successful!")
 
             # ✅ Redirect to Mainpage view instead of rendering directly
             return redirect('Mainpage')  # 'mainpage' should be the URL name of your Mainpage view
@@ -118,7 +118,7 @@ def loginpage2(request):
         
         if user:
             request.session['admin_username'] = user.username
-            messages.success(request, "✅ Login Successful!")
+            # messages.success(request, "✅ Login Successful!")
             return redirect("Mainpageadmin")
         else:
             messages.error(request, "❌ Invalid username or password.")
@@ -425,6 +425,7 @@ def Mainpage(request):
     phoneno = request.session.get('phoneno')
     print(phoneno)
     user = Signup.objects.get(username=username)
+    total_posts = Post.objects.count()
     total_complaints = Complaint.objects.filter(phone=phoneno).count()
     total_requests = Request.objects.filter(phone_number=phoneno).count()
     unverified_complaints = Complaint.objects.filter(phone=phoneno, status='unverified').count()
@@ -435,17 +436,19 @@ def Mainpage(request):
     verified_requests = Request.objects.filter(phone_number=phoneno, status='verified').count()
     pending_requests = Request.objects.filter(phone_number=phoneno, status='pending').count()
     completed_requests = Request.objects.filter(phone_number=phoneno, status='complete').count()
+    
     print(total_complaints)
     return render(request, "Mainpage.html", {
         "user": user,
         "total_complaints": total_complaints,
         "total_requests": total_requests,
         "phoneno":phoneno,
+         'total_posts': total_posts,
         'complaints_by_status': {
         'unverified':unverified_complaints,
         'verified': verified_complaints,
         'pending': pending_complaints,
-        'complete': completed_complaints
+        'complete': completed_complaints,
     },
     'requests_by_status': {
         'unverified': unverified_requests,
@@ -467,6 +470,7 @@ def Mainpageadmin(request):
 
 def Mainsupervisor(request):
     supervisor_username=request.session.get('supervisor_username', None)
+    total_posts = Post.objects.count()
     supervisors=Supervisor.objects.filter(supervisor_name=supervisor_username)
     compcount= Complaint.objects.filter(supervisor_name=supervisor_username, status='unverified').count()
     reqcount= Request.objects.filter(supervisor_name=supervisor_username, status='unverified').count()
@@ -476,7 +480,7 @@ def Mainsupervisor(request):
         address = s.address
     total_complaints = Complaint.objects.filter(supervisor_name=supervisor_username).count()
     total_requests = Request.objects.filter(supervisor_name=supervisor_username).count()
-    return render(request, "Mainsupervisor.html",{"supervisor_username" : supervisor_username, "total_complaints": total_complaints,
+    return render(request, "Mainsupervisor.html",{"supervisor_username" : supervisor_username, "total_complaints": total_complaints, 'total_posts': total_posts,
         "total_requests": total_requests, "phones":phones, "address":address,'pending_tasks':pending_tasks})
 
 @ensure_csrf_cookie
