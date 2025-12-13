@@ -453,6 +453,107 @@
       color: var(--text-dark);
       font-weight: 600;
     }
+
+    /* Delete Confirmation Modal */
+    .delete-modal {
+      display: none;
+      position: fixed;
+      z-index: 3000;
+      left: 0;
+      top: 0;
+      width: 100%;
+      height: 100%;
+      background-color: rgba(0,0,0,0.5);
+      animation: fadeIn 0.3s;
+    }
+
+    .delete-modal.active {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+    }
+
+    .delete-modal-content {
+      background-color: white;
+      border-radius: 12px;
+      width: 90%;
+      max-width: 450px;
+      animation: slideUp 0.3s;
+      box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+    }
+
+    .delete-modal-header {
+      padding: 24px 30px;
+      border-bottom: 1px solid var(--border-color);
+      display: flex;
+      align-items: center;
+      gap: 15px;
+      background: linear-gradient(135deg, var(--danger-red), #dc2626);
+      color: white;
+      border-radius: 12px 12px 0 0;
+    }
+
+    .delete-modal-header h2 {
+      font-size: 1.3em;
+    }
+
+    .delete-icon {
+      font-size: 2em;
+    }
+
+    .delete-modal-body {
+      padding: 30px;
+    }
+
+    .delete-message {
+      font-size: 1.05em;
+      color: var(--text-dark);
+      margin-bottom: 10px;
+    }
+
+    .delete-warning {
+      font-size: 0.9em;
+      color: var(--text-light);
+      margin-top: 10px;
+    }
+
+    .delete-actions {
+      display: flex;
+      gap: 12px;
+      justify-content: flex-end;
+      margin-top: 25px;
+    }
+
+    .btn-delete-cancel,
+    .btn-delete-confirm {
+      padding: 12px 24px;
+      border: none;
+      border-radius: 8px;
+      font-size: 1em;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.3s;
+    }
+
+    .btn-delete-cancel {
+      background-color: #f3f4f6;
+      color: var(--text-dark);
+    }
+
+    .btn-delete-cancel:hover {
+      background-color: #e5e7eb;
+    }
+
+    .btn-delete-confirm {
+      background-color: var(--danger-red);
+      color: white;
+    }
+
+    .btn-delete-confirm:hover {
+      background-color: #dc2626;
+      transform: translateY(-2px);
+      box-shadow: 0 4px 12px rgba(239, 68, 68, 0.3);
+    }
   </style>
 </head>
 <body>
@@ -524,7 +625,7 @@
         <tbody id="tableBody">
           {% if supervisors %}
             {% for supervisor in supervisors %}
-            <tr>
+            <tr data-id="{{ supervisor.id }}">
               <td>{{ supervisor.supervisor_id }}</td>
               <td>{{ supervisor.supervisor_name }}</td>
               <td>{{ supervisor.phone }}</td>
@@ -537,8 +638,8 @@
               <td>{{ supervisor.address }}</td>
               <td>
                 <div class="action-btns">
-                  <button class="btn-edit" onclick="editSupervisor('{{ supervisor.id }}')">Edit</button>
-                  <button class="btn-delete" onclick="deleteSupervisor('{{ supervisor.id }}')">Delete</button>
+                  <button class="btn-edit" onclick="editSupervisor('{{ supervisor.id }}', '{{ supervisor.supervisor_id }}', '{{ supervisor.supervisor_name }}', '{{ supervisor.phone }}', '{{ supervisor.area }}', '{{ supervisor.gender }}', '{{ supervisor.address|escapejs }}')">Edit</button>
+                  <button class="btn-delete" onclick="deleteSupervisor('{{ supervisor.id }}', '{{ supervisor.supervisor_name }}')">Delete</button>
                 </div>
               </td>
             </tr>
@@ -555,16 +656,17 @@
     </div>
   </div>
 
-  <!-- Modal -->
+  <!-- Add/Edit Modal -->
   <div id="addModal" class="modal">
     <div class="modal-content">
       <div class="modal-header">
-        <h2>Add New Supervisor</h2>
+        <h2 id="modalTitle">Add New Supervisor</h2>
         <button class="close-btn" onclick="closeModal()">&times;</button>
       </div>
       <div class="modal-body">
         <form id="supervisorForm" method="POST" action="{% url 'Add_supervisor' %}">
           {% csrf_token %}
+          <input type="hidden" id="edit_id" name="edit_id" value="">
           
           <div class="form-group">
             <label for="supervisor_name">Supervisor Name *</label>
@@ -611,19 +713,41 @@
             <textarea id="address" name="address" required></textarea>
           </div>
 
-          <div class="form-group">
+          <div class="form-group" id="passwordGroup">
             <label for="password">Password *</label>
-            <input type="password" id="password" name="password" required>
+            <input type="password" id="password" name="password">
           </div>
 
-          <div class="form-group">
+          <div class="form-group" id="conpassGroup">
             <label for="conpass">Confirm Password *</label>
-            <input type="password" id="conpass" name="conpass" required>
+            <input type="password" id="conpass" name="conpass">
           </div>
 
           <div class="form-actions">
             <button type="button" class="btn-cancel" onclick="closeModal()">Cancel</button>
-            <button type="submit" class="btn-submit">Add Supervisor</button>
+            <button type="submit" class="btn-submit" id="submitBtn">Add Supervisor</button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+
+  <!-- Delete Confirmation Modal -->
+  <div id="deleteModal" class="delete-modal">
+    <div class="delete-modal-content">
+      <div class="delete-modal-header">
+        <span class="delete-icon">⚠️</span>
+        <h2>Confirm Delete</h2>
+      </div>
+      <div class="delete-modal-body">
+        <p class="delete-message">Are you sure you want to delete supervisor <strong id="deleteName"></strong>?</p>
+        <p class="delete-warning">This action cannot be undone and will permanently remove all associated data.</p>
+        <form id="deleteForm" method="POST" action="{% url 'Add_supervisor' %}">
+          {% csrf_token %}
+          <input type="hidden" id="delete_id" name="delete_id" value="">
+          <div class="delete-actions">
+            <button type="button" class="btn-delete-cancel" onclick="closeDeleteModal()">Cancel</button>
+            <button type="submit" class="btn-delete-confirm">Delete Supervisor</button>
           </div>
         </form>
       </div>
@@ -633,6 +757,13 @@
   <script>
     function openModal() {
       document.getElementById('addModal').classList.add('active');
+      document.getElementById('modalTitle').textContent = 'Add New Supervisor';
+      document.getElementById('submitBtn').textContent = 'Add Supervisor';
+      document.getElementById('edit_id').value = '';
+      document.getElementById('password').required = true;
+      document.getElementById('conpass').required = true;
+      document.getElementById('passwordGroup').style.display = 'block';
+      document.getElementById('conpassGroup').style.display = 'block';
     }
 
     function closeModal() {
@@ -640,23 +771,66 @@
       document.getElementById('supervisorForm').reset();
     }
 
-    // Close modal when clicking outside
+    function editSupervisor(id, supId, name, phone, area, gender, address) {
+      document.getElementById('addModal').classList.add('active');
+      document.getElementById('modalTitle').textContent = 'Edit Supervisor';
+      document.getElementById('submitBtn').textContent = 'Update Supervisor';
+      
+      // Fill form with existing data
+      document.getElementById('edit_id').value = id;
+      document.getElementById('supervisor_id').value = supId;
+      document.getElementById('supervisor_name').value = name;
+      document.getElementById('phone').value = phone;
+      document.getElementById('area').value = area;
+      document.getElementById('address').value = address;
+      
+      // Set gender radio button
+      const genderRadios = document.querySelectorAll('input[name="gender"]');
+      genderRadios.forEach(radio => {
+        if (radio.value === gender) {
+          radio.checked = true;
+        }
+      });
+      
+      // Hide password fields for editing (optional - keep them if you want to allow password change)
+      document.getElementById('password').required = false;
+      document.getElementById('conpass').required = false;
+      document.getElementById('passwordGroup').style.display = 'none';
+      document.getElementById('conpassGroup').style.display = 'none';
+    }
+
+    function deleteSupervisor(id, name) {
+      document.getElementById('deleteModal').classList.add('active');
+      document.getElementById('delete_id').value = id;
+      document.getElementById('deleteName').textContent = name;
+    }
+
+    function closeDeleteModal() {
+      document.getElementById('deleteModal').classList.remove('active');
+    }
+
+    // Close modals when clicking outside
     window.onclick = function(event) {
-      const modal = document.getElementById('addModal');
-      if (event.target === modal) {
+      const addModal = document.getElementById('addModal');
+      const deleteModal = document.getElementById('deleteModal');
+      
+      if (event.target === addModal) {
         closeModal();
       }
+      if (event.target === deleteModal) {
+        closeDeleteModal();
+      }
     }
-    
 
-    // Close modal on Escape key
+    // Close modals on Escape key
     document.addEventListener('keydown', function(event) {
       if (event.key === 'Escape') {
         closeModal();
+        closeDeleteModal();
       }
     });
 
-     function filterTable() {
+    function filterTable() {
       let idInput = document.getElementById("searchId").value.toLowerCase();
       let nameInput = document.getElementById("searchName").value.toLowerCase();
       let areaInput = document.getElementById("searchArea").value.toLowerCase();

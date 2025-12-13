@@ -104,7 +104,6 @@ def loginpage(request):
             return redirect("loginpage")
 
     return render(request, "loginpage.html")
-
 def loginpage2(request):
     if request.method == "POST":
         username = request.POST.get("username")
@@ -134,7 +133,6 @@ def loginpage3(request):
         new_det.save()
         if user:
             request.session['supervisor_username']=user.supervisor_name
-            messages.success(request, "✅ Login Successful!")
             return redirect("Mainsupervisor")
         else:
             messages.error(request, "❌ Invalid username or password.")
@@ -156,9 +154,10 @@ from django.contrib import messages
 from .models import Complaint, Signup
 
 def complaint_form(request): 
+    phoneno=request.session.get('phoneno')
     supervisors = Supervisor.objects.all()  
     area = Area.objects.all()
-    complaints = Complaint.objects.all().order_by('-date_time')
+    complaints = Complaint.objects.filter(phone=phoneno).order_by('-date_time')
 
     if request.method == "POST":
         # Get form data
@@ -230,7 +229,7 @@ def Forgotpassword(request):
         # Redirect to verify OTP page
         return render(request, "verify_otp.html", {"phoneno": phoneno})
 
-    return render(request, "Forgotpassword.html")
+    return render(request, "Forgot_password.html")
 
 # Step 2: Verify OTP and reset password
 def verify_otp(request):
@@ -258,9 +257,9 @@ def verify_otp(request):
 def requestform(request):
     supervisors = Supervisor.objects.all()
     area = Area.objects.all()
-
+    phoneno=request.session.get('phoneno')
     # FIXED: use date_time instead of datetime
-    requests = Request.objects.all().order_by('-date_time')
+    requests = Request.objects.filter(phone_number=phoneno).order_by('-date_time')
 
     if request.method == "POST":
         name = request.POST.get("name")
@@ -672,13 +671,15 @@ def delete_post3(request, post_id): #admin
     return redirect('Posts')
  
 def Trackstatus(request):
-    complaints = Complaint.objects.all()
+    phoneno=request.session.get('phoneno')
+    complaints = Complaint.objects.filter(phone=phoneno)
 
     return render(request, 'trackstatus.html', {
         'complaints': complaints
     })
 def Trackstatus2(request):
-    requests_data = Request.objects.all()
+    phoneno=request.session.get('phoneno')
+    requests_data = Request.objects.filter(phone_number=phoneno)
 
     return render(request, 'trackstatus2.html', {
         'requests_data': requests_data

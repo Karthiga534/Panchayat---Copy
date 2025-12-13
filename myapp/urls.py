@@ -59,4 +59,5 @@ urlpatterns = [
     path('achievementsupervisor/', views.Achievementsupervisor, name='Achievementsupervisor'),
     path('complaintseo/', views.complaints_eo, name='complaints_eo'),
     path('requestseo/', views.requests_eo, name='requests_eo'),
+    #path('forgotpassword/', views.forgotpassword, name='forgotpassword'),
 ]

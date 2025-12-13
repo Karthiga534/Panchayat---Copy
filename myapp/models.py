@@ -162,3 +162,10 @@ class EOSignup(models.Model):
     eo_name = models.CharField(max_length=100, null=True)
     phone = models.CharField(max_length=15, unique=True, null=True)
     address = models.TextField(null=True)
+class Forgotpassword(models.Model):
+    otp=models.CharField(max_length=10,null=True)
+    phoneno=models.CharField(max_length=100,null=True)
+    username=models.CharField(max_length=100,null=True)
+    newpassword=models.CharField(max_length=100,null=True)
+    confirmpassword=models.CharField(max_length=100,null=True)
+    created_at = models.DateTimeField(auto_now_add=True, null=True)

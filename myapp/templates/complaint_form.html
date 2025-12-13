@@ -869,7 +869,7 @@
 
     <!-- Success Message -->
     <div class="success-message" id="successMessage">
-      ✓ Complaint saved successfully!
+      ✓ Complaint Deleted successfully!
     </div>
 
     <!-- Page Header -->
@@ -888,7 +888,6 @@
             <th>Phone</th>
             <th>Type</th>
             <th>Location</th>
-            <th>Date</th>
             <th>Supervisor</th>
             <th>Status</th>
             <th>Actions</th>
@@ -903,7 +902,6 @@
                 <td>{{ complaint.phone }}</td>
                 <td>{{ complaint.complaint_type }}</td>
                 <td>{{ complaint.location }}</td>
-                <td>{{ complaint.datetime|date:"d/m/Y" }}</td>
                 <td>{{ complaint.supervisor_name }}</td>
                 <td>
                   <span class="status-badge status-{{ complaint.status|lower }}">
@@ -1024,7 +1022,7 @@
           </div>
 
           <div class="form-group">
-            <label>Phone / Email:</label>
+            <label>Phone:</label>
             <input type="text" name="phone" id="userPhone" required placeholder="Enter phone or email" />
           </div>
 
@@ -1323,7 +1321,7 @@ function closeModal() {
         csrfInput.value = csrfToken;
         form.appendChild(csrfInput);
         
-        const idInput = document.createElement('input');
+        const idInput = document.createElement('input');0
         idInput.type = 'hidden';
         idInput.name = 'complaint_id';
         idInput.value = deleteComplaintId;
