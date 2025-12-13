@@ -910,9 +910,36 @@
                 </td>
                 <td>
                   <div class="action-buttons">
-                    <button class="view-btn" onclick='viewComplaint({{ complaint.id }}, "{{ complaint.user }}", "{{ complaint.phone }}", "{{ complaint.address }}", "{{ complaint.supervisor_name }}", "{{ complaint.complaint_type }}", "{{ complaint.location }}", "{{ complaint.datetime|date:"Y-m-d\TH:i" }}", "{{ complaint.description }}", "{{ complaint.status }}")'>View</button>
-                    <button class="edit-btn" onclick='editComplaint({{ complaint.id }}, "{{ complaint.user }}", "{{ complaint.phone }}", "{{ complaint.address }}", "{{ complaint.supervisor_name }}", "{{ complaint.complaint_type }}", "{{ complaint.location }}", "{{ complaint.datetime|date:"Y-m-d\TH:i" }}", "{{ complaint.description }}","{{complaint.status}}")'>Edit</button>
-                    <button class="delete-btn" onclick="confirmDelete({{ complaint.id }})">Delete</button>
+                    <button class="view-btn"
+  onclick="openViewFromButton(this)"
+  data-id="{{ complaint.id }}"
+  data-user="{{ complaint.user }}"
+  data-phone="{{ complaint.phone }}"
+  data-address="{{ complaint.address }}"
+  data-supervisor="{{ complaint.supervisor_name }}"
+  data-type="{{ complaint.complaint_type }}"
+  data-location="{{ complaint.location }}"
+  data-datetime="{{ complaint.datetime|date:'Y-m-d H:i' }}"
+  data-description="{{ complaint.description }}"
+  data-status="{{ complaint.status }}"
+>
+👁️ View
+</button>
+                   <button class="edit-btn"
+  onclick="openEditFromButton(this)"
+  data-id="{{ complaint.id }}"
+  data-user="{{ complaint.user }}"
+  data-phone="{{ complaint.phone }}"
+  data-address="{{ complaint.address }}"
+  data-supervisor="{{ complaint.supervisor_name }}"
+  data-type="{{ complaint.complaint_type }}"
+  data-location="{{ complaint.location }}"
+  data-datetime="{{ complaint.datetime|date:'Y-m-d H:i' }}"
+  data-description="{{ complaint.description }}"
+  data-status="{{ complaint.status }}"
+>
+✏️ Edit
+</button>                    <button class="delete-btn" onclick="confirmDelete({{ complaint.id }})">Delete</button>
                   </div>
                 </td>
               </tr>
@@ -1125,6 +1152,34 @@
   </div>
 
   <script>
+    function openViewFromButton(btn) {
+  viewComplaint(
+    btn.dataset.id,
+    btn.dataset.user,
+    btn.dataset.phone,
+    btn.dataset.address,
+    btn.dataset.supervisor,
+    btn.dataset.type,
+    btn.dataset.location,
+    btn.dataset.datetime,
+    btn.dataset.description,
+    btn.dataset.status
+  );
+}
+function openEditFromButton(btn) {
+  editComplaint(
+    btn.dataset.id,
+    btn.dataset.user,
+    btn.dataset.phone,
+    btn.dataset.address,
+    btn.dataset.supervisor,
+    btn.dataset.type,
+    btn.dataset.location,
+    btn.dataset.datetime,
+    btn.dataset.description,
+    btn.dataset.status
+  );
+}
     let isViewMode = false;
     let isEditMode = false;
     let deleteComplaintId = null;

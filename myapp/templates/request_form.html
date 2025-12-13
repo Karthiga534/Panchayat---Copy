@@ -5,582 +5,79 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>requests Management</title>
   <style>
-    * { 
-      box-sizing: border-box; 
-      margin: 0; 
-      padding: 0; 
-    }
+    *{box-sizing:border-box;margin:0;padding:0;}
+body{font-family:"Segoe UI",Tahoma,Geneva,Verdana,sans-serif;background:#eef2ff;display:flex;height:100vh;overflow:hidden;}
+.sidebar{width:240px;background:#1e3a8a;color:white;padding-top:30px;display:flex;flex-direction:column;position:fixed;left:0;top:0;bottom:0;z-index:100;}
+.sidebar h2{text-align:center;margin-bottom:25px;font-size:22px;font-weight:bold;}
+.sidebar a{display:block;padding:14px 25px;color:white;text-decoration:none;font-size:16px;margin:5px 0;border-left:4px solid transparent;transition:0.3s;}
+.sidebar a:hover,.sidebar .active{background:#3b82f6;border-left:4px solid #ffffff;}
+.main-content{margin-left:240px;width:calc(100% - 240px);padding:20px 30px;overflow-y:auto;height:100vh;}
+.page-header{background:white;padding:20px 30px;border-radius:12px;box-shadow:0 2px 10px rgba(0,0,0,0.1);display:flex;justify-content:space-between;align-items:center;margin-bottom:25px;}
+.page-header h1{color:#1565c0;font-size:28px;font-weight:600;}
+.add-request-btn{background:linear-gradient(135deg,#1e88e5 0%,#1565c0 100%);color:white;border:none;padding:12px 25px;border-radius:8px;font-size:16px;font-weight:600;cursor:pointer;transition:all 0.3s;box-shadow:0 4px 15px rgba(30,136,229,0.3);}
+.add-request-btn:hover{transform:translateY(-2px);box-shadow:0 6px 20px rgba(30,136,229,0.4);}
+.table-container{background:white;border-radius:12px;box-shadow:0 2px 10px rgba(0,0,0,0.1);overflow:hidden;}
+table{width:100%;border-collapse:collapse;}
+thead{background:linear-gradient(135deg,#1e3a8a 0%,#1e3a8a 100%);color:white;}
+thead th{padding:15px;text-align:left;font-weight:600;font-size:14px;text-transform:uppercase;letter-spacing:0.5px;}
+tbody tr{border-bottom:1px solid #e0e0e0;transition:background 0.2s;}
+tbody tr:hover{background:#f5f5f5;}
+tbody td{padding:15px;color:#424242;font-size:14px;}
+.status-badge{padding:5px 12px;border-radius:20px;font-size:12px;font-weight:600;display:inline-block;}
+.status-pending{background:#fff3cd;color:#856404;}
+.status-in-progress{background:#cfe2ff;color:#084298;}
+.status-resolved{background:#d1e7dd;color:#0f5132;}
+.action-buttons{display:flex;gap:8px;}
+.view-btn,.edit-btn,.delete-btn{padding:6px 12px;border:none;border-radius:5px;cursor:pointer;font-size:13px;font-weight:500;transition:all 0.2s;}
+.view-btn{background:#42a5f5;color:white;}
+.view-btn:hover{background:#1e88e5;}
+.edit-btn{background:#66bb6a;color:white;}
+.edit-btn:hover{background:#43a047;}
+.delete-btn{background:#ef5350;color:white;}
+.delete-btn:hover{background:#d32f2f;}
+.modal{display:none;position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,0.5);z-index:1000;justify-content:center;align-items:center;animation:fadeIn 0.3s;}
+.modal.show{display:flex;}
+.modal-content{background:white;width:90%;max-width:600px;border-radius:15px;box-shadow:0 10px 40px rgba(0,0,0,0.3);max-height:90vh;overflow-y:auto;animation:slideUp 0.3s;}
+.modal-header{background:linear-gradient(135deg,#1e88e5 0%,#1565c0 100%);color:white;padding:20px 25px;border-radius:15px 15px 0 0;display:flex;justify-content:space-between;align-items:center;}
+.modal-header h2{font-size:22px;font-weight:600;}
+.close-btn{background:none;border:none;color:white;font-size:28px;cursor:pointer;line-height:1;width:30px;height:30px;}
+.modal-body{padding:25px;}
+.form-group{margin-bottom:18px;}
+.form-group label{display:block;color:#1565c0;font-weight:600;margin-bottom:8px;font-size:14px;}
+.form-group input,.form-group textarea,.form-group select{width:100%;padding:12px;border:2px solid #e0e0e0;border-radius:8px;font-size:14px;transition:all 0.3s;font-family:inherit;}
+.form-group input:focus,.form-group textarea:focus,.form-group select:focus{outline:none;border-color:#1e88e5;box-shadow:0 0 0 3px rgba(30,136,229,0.1);}
+.form-group input:disabled,.form-group textarea:disabled,.form-group select:disabled{background:#f5f5f5;cursor:not-allowed;}
+.checkbox-group{display:grid;grid-template-columns:repeat(2,1fr);gap:10px;margin-top:8px;}
+.checkbox-item{display:flex;align-items:center;gap:8px;font-size:14px;color:#424242;}
+.checkbox-item input[type="checkbox"]{width:18px;height:18px;cursor:pointer;}
+.checkbox-item input[type="text"]{flex:1;padding:6px 10px;border:1px solid #ccc;border-radius:6px;font-size:13px;}
+.modal-footer{padding:20px 25px;border-top:1px solid #e0e0e0;display:flex;justify-content:flex-end;gap:12px;}
+.btn-cancel,.btn-save,.btn-close{padding:12px 30px;border:none;border-radius:8px;font-size:15px;font-weight:600;cursor:pointer;transition:all 0.3s;}
+.btn-cancel{background:#e0e0e0;color:#424242;}
+.btn-cancel:hover{background:#bdbdbd;}
+.btn-save{background:linear-gradient(135deg,#1e88e5 0%,#1565c0 100%);color:white;box-shadow:0 4px 15px rgba(30,136,229,0.3);}
+.btn-save:hover{transform:translateY(-2px);box-shadow:0 6px 20px rgba(30,136,229,0.4);}
+.btn-close{background:#757575;color:white;}
+.btn-close:hover{background:#616161;}
+.success-message{position:fixed;top:20px;right:20px;background:#4caf50;color:white;padding:15px 25px;border-radius:8px;box-shadow:0 4px 15px rgba(76,175,80,0.3);z-index:2000;display:none;animation:slideInRight 0.3s;}
+.success-message.show{display:block;}
+.delete-modal{display:none;position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,0.5);z-index:1500;justify-content:center;align-items:center;}
+.delete-modal.show{display:flex;}
+.delete-modal-content{background:white;width:90%;max-width:400px;border-radius:15px;padding:30px;text-align:center;animation:slideUp 0.3s;}
+.delete-icon{font-size:50px;margin-bottom:15px;}
+.delete-modal-content h3{color:#d32f2f;margin-bottom:10px;font-size:22px;}
+.delete-modal-content p{color:#666;margin-bottom:25px;font-size:15px;}
+.delete-modal-buttons{display:flex;gap:12px;justify-content:center;}
+.btn-confirm-delete{background:#ef5350;color:white;padding:12px 30px;border:none;border-radius:8px;font-size:15px;font-weight:600;cursor:pointer;transition:all 0.3s;}
+.btn-confirm-delete:hover{background:#d32f2f;transform:translateY(-2px);}
+.btn-cancel-delete{background:#e0e0e0;color:#424242;padding:12px 30px;border:none;border-radius:8px;font-size:15px;font-weight:600;cursor:pointer;transition:all 0.3s;}
+.btn-cancel-delete:hover{background:#bdbdbd;}
+.empty-state{text-align:center;padding:60px 20px;color:#757575;}
+.empty-state-icon{font-size:60px;margin-bottom:15px;}
+.empty-state h3{font-size:20px;margin-bottom:10px;}
+.info-display{background:#f5f5f5;padding:12px;border-radius:8px;color:#424242;font-size:14px;min-height:44px;display:flex;align-items:center;}
+@media (max-width:768px){.sidebar{width:200px;}.main-content{margin-left:200px;width:calc(100% - 200px);}.page-header{flex-direction:column;gap:15px;text-align:center;}.add-request-btn{width:100%;}table{font-size:12px;}thead th,tbody td{padding:10px 8px;}.checkbox-group{grid-template-columns:1fr;}}
 
-    body {
-      font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
-      background: #eef2ff;
-      display: flex;
-      height: 100vh;
-      overflow: hidden;
-    }
-
-    /* ---------------- SIDEBAR ---------------- */
-    .sidebar {
-      width: 240px;
-      background: #1e3a8a;
-      color: white;
-      padding-top: 30px;
-      display: flex;
-      flex-direction: column;
-      position: fixed;
-      left: 0;
-      top: 0;
-      bottom: 0;
-      z-index: 100;
-    }
-
-    .sidebar h2 {
-      text-align: center;
-      margin-bottom: 25px;
-      font-size: 22px;
-      font-weight: bold;
-    }
-
-    .sidebar a {
-      display: block;
-      padding: 14px 25px;
-      color: white;
-      text-decoration: none;
-      font-size: 16px;
-      margin: 5px 0;
-      border-left: 4px solid transparent;
-      transition: 0.3s;
-    }
-
-    .sidebar a:hover,
-    .sidebar .active {
-      background: #3b82f6;
-      border-left: 4px solid #ffffff;
-    }
-
-    /* ---------------- MAIN CONTENT ---------------- */
-    .main-content {
-      margin-left: 240px;
-      width: calc(100% - 240px);
-      padding: 20px 30px;
-      overflow-y: auto;
-      height: 100vh;
-    }
-
-    /* Page Header */
-    .page-header {
-      background: white;
-      padding: 20px 30px;
-      border-radius: 12px;
-      box-shadow: 0 2px 10px rgba(0,0,0,0.1);
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      margin-bottom: 25px;
-    }
-
-    .page-header h1 {
-      color: #1565c0;
-      font-size: 28px;
-      font-weight: 600;
-    }
-
-    .add-request-btn {
-      background: linear-gradient(135deg, #1e88e5 0%, #1565c0 100%);
-      color: white;
-      border: none;
-      padding: 12px 25px;
-      border-radius: 8px;
-      font-size: 16px;
-      font-weight: 600;
-      cursor: pointer;
-      transition: all 0.3s;
-      box-shadow: 0 4px 15px rgba(30, 136, 229, 0.3);
-    }
-
-    .add-request-btn:hover {
-      transform: translateY(-2px);
-      box-shadow: 0 6px 20px rgba(30, 136, 229, 0.4);
-    }
-
-    /* Table Container */
-    .table-container {
-      background: white;
-      border-radius: 12px;
-      box-shadow: 0 2px 10px rgba(0,0,0,0.1);
-      overflow: hidden;
-    }
-
-    table {
-      width: 100%;
-      border-collapse: collapse;
-    }
-
-    thead {
-      background: linear-gradient(135deg, #1e3a8a 0%, #1e3a8a 100%);
-      color: white;
-    }
-
-    thead th {
-      padding: 15px;
-      text-align: left;
-      font-weight: 600;
-      font-size: 14px;
-      text-transform: uppercase;
-      letter-spacing: 0.5px;
-    }
-
-    tbody tr {
-      border-bottom: 1px solid #e0e0e0;
-      transition: background 0.2s;
-    }
-
-    tbody tr:hover {
-      background: #f5f5f5;
-    }
-
-    tbody td {
-      padding: 15px;
-      color: #424242;
-      font-size: 14px;
-    }
-
-    /* Status Badge */
-    .status-badge {
-      padding: 5px 12px;
-      border-radius: 20px;
-      font-size: 12px;
-      font-weight: 600;
-      display: inline-block;
-    }
-
-    .status-pending {
-      background: #fff3cd;
-      color: #856404;
-    }
-
-    .status-in-progress {
-      background: #cfe2ff;
-      color: #084298;
-    }
-
-    .status-resolved {
-      background: #d1e7dd;
-      color: #0f5132;
-    }
-
-    /* Action Buttons */
-    .action-buttons {
-      display: flex;
-      gap: 8px;
-    }
-
-    .view-btn, .edit-btn, .delete-btn {
-      padding: 6px 12px;
-      border: none;
-      border-radius: 5px;
-      cursor: pointer;
-      font-size: 13px;
-      font-weight: 500;
-      transition: all 0.2s;
-    }
-
-    .view-btn {
-      background: #42a5f5;
-      color: white;
-    }
-
-    .view-btn:hover {
-      background: #1e88e5;
-    }
-
-    .edit-btn {
-      background: #66bb6a;
-      color: white;
-    }
-
-    .edit-btn:hover {
-      background: #43a047;
-    }
-
-    .delete-btn {
-      background: #ef5350;
-      color: white;
-    }
-
-    .delete-btn:hover {
-      background: #d32f2f;
-    }
-
-    /* Modal Styles */
-    .modal {
-      display: none;
-      position: fixed;
-      top: 0;
-      left: 0;
-      width: 100%;
-      height: 100%;
-      background: rgba(0, 0, 0, 0.5);
-      z-index: 1000;
-      justify-content: center;
-      align-items: center;
-      animation: fadeIn 0.3s;
-    }
-
-    @keyframes fadeIn {
-      from { opacity: 0; }
-      to { opacity: 1; }
-    }
-
-    .modal.show {
-      display: flex;
-    }
-
-    .modal-content {
-      background: white;
-      width: 90%;
-      max-width: 600px;
-      border-radius: 15px;
-      box-shadow: 0 10px 40px rgba(0,0,0,0.3);
-      max-height: 90vh;
-      overflow-y: auto;
-      animation: slideUp 0.3s;
-    }
-
-    @keyframes slideUp {
-      from { 
-        opacity: 0;
-        transform: translateY(50px);
-      }
-      to { 
-        opacity: 1;
-        transform: translateY(0);
-      }
-    }
-
-    .modal-header {
-      background: linear-gradient(135deg, #1e88e5 0%, #1565c0 100%);
-      color: white;
-      padding: 20px 25px;
-      border-radius: 15px 15px 0 0;
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-    }
-
-    .modal-header h2 {
-      font-size: 22px;
-      font-weight: 600;
-    }
-
-    .close-btn {
-      background: none;
-      border: none;
-      color: white;
-      font-size: 28px;
-      cursor: pointer;
-      line-height: 1;
-      padding: 0;
-      width: 30px;
-      height: 30px;
-    }
-
-    .modal-body {
-      padding: 25px;
-    }
-
-    .form-group {
-      margin-bottom: 18px;
-    }
-
-    .form-group label {
-      display: block;
-      color: #1565c0;
-      font-weight: 600;
-      margin-bottom: 8px;
-      font-size: 14px;
-    }
-
-    .form-group input,
-    .form-group textarea,
-    .form-group select {
-      width: 100%;
-      padding: 12px;
-      border: 2px solid #e0e0e0;
-      border-radius: 8px;
-      font-size: 14px;
-      transition: all 0.3s;
-      font-family: inherit;
-    }
-
-    .form-group input:focus,
-    .form-group textarea:focus,
-    .form-group select:focus {
-      outline: none;
-      border-color: #1e88e5;
-      box-shadow: 0 0 0 3px rgba(30, 136, 229, 0.1);
-    }
-
-    /* View Mode - Disabled Inputs */
-    .form-group input:disabled,
-    .form-group textarea:disabled,
-    .form-group select:disabled {
-      background: #f5f5f5;
-      cursor: not-allowed;
-    }
-
-    .checkbox-group {
-      display: grid;
-      grid-template-columns: repeat(2, 1fr);
-      gap: 10px;
-      margin-top: 8px;
-    }
-
-    .checkbox-item {
-      display: flex;
-      align-items: center;
-      gap: 8px;
-      font-size: 14px;
-      color: #424242;
-    }
-
-    .checkbox-item input[type="checkbox"] {
-      width: 18px;
-      height: 18px;
-      cursor: pointer;
-    }
-
-    .checkbox-item input[type="text"] {
-      flex: 1;
-      padding: 6px 10px;
-      border: 1px solid #ccc;
-      border-radius: 6px;
-      font-size: 13px;
-    }
-
-    .modal-footer {
-      padding: 20px 25px;
-      border-top: 1px solid #e0e0e0;
-      display: flex;
-      justify-content: flex-end;
-      gap: 12px;
-    }
-
-    .btn-cancel, .btn-save, .btn-close {
-      padding: 12px 30px;
-      border: none;
-      border-radius: 8px;
-      font-size: 15px;
-      font-weight: 600;
-      cursor: pointer;
-      transition: all 0.3s;
-    }
-
-    .btn-cancel {
-      background: #e0e0e0;
-      color: #424242;
-    }
-
-    .btn-cancel:hover {
-      background: #bdbdbd;
-    }
-
-    .btn-save {
-      background: linear-gradient(135deg, #1e88e5 0%, #1565c0 100%);
-      color: white;
-      box-shadow: 0 4px 15px rgba(30, 136, 229, 0.3);
-    }
-
-    .btn-save:hover {
-      transform: translateY(-2px);
-      box-shadow: 0 6px 20px rgba(30, 136, 229, 0.4);
-    }
-
-    .btn-close {
-      background: #757575;
-      color: white;
-    }
-
-    .btn-close:hover {
-      background: #616161;
-    }
-
-    /* Success Message */
-    .success-message {
-      position: fixed;
-      top: 20px;
-      right: 20px;
-      background: #4caf50;
-      color: white;
-      padding: 15px 25px;
-      border-radius: 8px;
-      box-shadow: 0 4px 15px rgba(76, 175, 80, 0.3);
-      z-index: 2000;
-      display: none;
-      animation: slideInRight 0.3s;
-    }
-
-    @keyframes slideInRight {
-      from {
-        opacity: 0;
-        transform: translateX(100px);
-      }
-      to {
-        opacity: 1;
-        transform: translateX(0);
-      }
-    }
-
-    .success-message.show {
-      display: block;
-    }
-
-    /* Delete Confirmation Modal */
-    .delete-modal {
-      display: none;
-      position: fixed;
-      top: 0;
-      left: 0;
-      width: 100%;
-      height: 100%;
-      background: rgba(0, 0, 0, 0.5);
-      z-index: 1500;
-      justify-content: center;
-      align-items: center;
-    }
-
-    .delete-modal.show {
-      display: flex;
-    }
-
-    .delete-modal-content {
-      background: white;
-      width: 90%;
-      max-width: 400px;
-      border-radius: 15px;
-      padding: 30px;
-      text-align: center;
-      animation: slideUp 0.3s;
-    }
-
-    .delete-icon {
-      font-size: 50px;
-      margin-bottom: 15px;
-    }
-
-    .delete-modal-content h3 {
-      color: #d32f2f;
-      margin-bottom: 10px;
-      font-size: 22px;
-    }
-
-    .delete-modal-content p {
-      color: #666;
-      margin-bottom: 25px;
-      font-size: 15px;
-    }
-
-    .delete-modal-buttons {
-      display: flex;
-      gap: 12px;
-      justify-content: center;
-    }
-
-    .btn-confirm-delete {
-      background: #ef5350;
-      color: white;
-      padding: 12px 30px;
-      border: none;
-      border-radius: 8px;
-      font-size: 15px;
-      font-weight: 600;
-      cursor: pointer;
-      transition: all 0.3s;
-    }
-
-    .btn-confirm-delete:hover {
-      background: #d32f2f;
-      transform: translateY(-2px);
-    }
-
-    .btn-cancel-delete {
-      background: #e0e0e0;
-      color: #424242;
-      padding: 12px 30px;
-      border: none;
-      border-radius: 8px;
-      font-size: 15px;
-      font-weight: 600;
-      cursor: pointer;
-      transition: all 0.3s;
-    }
-
-    .btn-cancel-delete:hover {
-      background: #bdbdbd;
-    }
-
-    /* Empty State */
-    .empty-state {
-      text-align: center;
-      padding: 60px 20px;
-      color: #757575;
-    }
-
-    .empty-state-icon {
-      font-size: 60px;
-      margin-bottom: 15px;
-    }
-
-    .empty-state h3 {
-      font-size: 20px;
-      margin-bottom: 10px;
-    }
-
-    /* Info Display (View Mode) */
-    .info-display {
-      background: #f5f5f5;
-      padding: 12px;
-      border-radius: 8px;
-      color: #424242;
-      font-size: 14px;
-      min-height: 44px;
-      display: flex;
-      align-items: center;
-    }
-
-    /* Responsive */
-    @media (max-width: 768px) {
-      .sidebar {
-        width: 200px;
-      }
-
-      .main-content {
-        margin-left: 200px;
-        width: calc(100% - 200px);
-      }
-
-      .page-header {
-        flex-direction: column;
-        gap: 15px;
-        text-align: center;
-      }
-
-      .add-request-btn {
-        width: 100%;
-      }
-
-      table {
-        font-size: 12px;
-      }
-
-      thead th, tbody td {
-        padding: 10px 8px;
-      }
-
-      .checkbox-group {
-        grid-template-columns: 1fr;
-      }
-    }
   </style>
 </head>
 <body>
@@ -644,8 +141,39 @@
                 </td>
                 <td>
                   <div class="action-buttons">
-                    <button class="view-btn" onclick='viewrequest({{ request.id }}, "{{ request.user }}", "{{ request.phone }}", "{{ request.address }}", "{{ request.supervisor_name }}", "{{ request.request_type }}", "{{ request.location }}", "{{ request.datetime|date:"Y-m-d\TH:i" }}", "{{ request.description }}", "{{ request.status }}")'>View</button>
-                    <button class="edit-btn" onclick='editrequest({{ request.id }}, "{{ request.user }}", "{{ request.phone }}", "{{ request.address }}", "{{ request.supervisor_name }}", "{{ request.request_type }}", "{{ request.location }}", "{{ request.datetime|date:"Y-m-d\TH:i" }}", "{{ request.description }}","{{request.status}}")'>Edit</button>
+                    <button
+    class="view-btn"
+    onclick="openViewRequest(this)"
+    data-id="{{ request.id }}"
+    data-user="{{ request.name }}"
+    data-phone="{{ request.phone_number }}"
+    data-address="{{ request.address }}"
+    data-supervisor="{{ request.supervisor_name }}"
+    data-type="{{ request.request_type }}"
+    data-location="{{ request.area }}"
+    data-datetime="{{ request.date_time|date:'Y-m-d H:i' }}"
+    data-description="{{ request.description }}"
+    data-status="{{ request.status }}"
+  >
+    View
+  </button>
+
+  <button
+    class="edit-btn"
+    onclick="openEditRequest(this)"
+    data-id="{{ request.id }}"
+    data-user="{{ request.name }}"
+    data-phone="{{ request.phone_number }}"
+    data-address="{{ request.address }}"
+    data-supervisor="{{ request.supervisor_name }}"
+    data-type="{{ request.request_type }}"
+    data-location="{{ request.area }}"
+    data-datetime="{{ request.date_time|date:'Y-m-d H:i' }}"
+    data-description="{{ request.description }}"
+    data-status="{{ request.status }}"
+  >
+    Edit
+  </button>
                     <button class="delete-btn" onclick="confirmDelete({{ request.id }})">Delete</button>
                   </div>
                 </td>
@@ -790,6 +318,35 @@
   </div>
 
   <script>
+    function openViewRequest(btn) {
+  viewrequest(
+    btn.dataset.id,
+    btn.dataset.user,
+    btn.dataset.phone,
+    btn.dataset.address,
+    btn.dataset.supervisor,
+    btn.dataset.type,
+    btn.dataset.location,
+    btn.dataset.datetime,
+    btn.dataset.description,
+    btn.dataset.status
+  );
+}
+
+function openEditRequest(btn) {
+  editrequest(
+    btn.dataset.id,
+    btn.dataset.user,
+    btn.dataset.phone,
+    btn.dataset.address,
+    btn.dataset.supervisor,
+    btn.dataset.type,
+    btn.dataset.location,
+    btn.dataset.datetime,
+    btn.dataset.description,
+    btn.dataset.status
+  );
+}
     let isViewMode = false;
     let isEditMode = false;
     let deleterequestId = null;
@@ -817,7 +374,7 @@
       document.getElementById('userName').value = user;
       document.getElementById('userPhone').value = phone;
       document.getElementById('userAddress').value = address;
-      document.getElementById('supervisorName').value = supervisor;
+      document.getElementById('supervisor_name').value = supervisor;
       document.getElementById('location').value = location;
       document.getElementById('datetime').value = datetime;
       document.getElementById('description').value = description;
@@ -851,7 +408,7 @@
       document.getElementById('userName').value = user;
       document.getElementById('userPhone').value = phone;
       document.getElementById('userAddress').value = address;
-      document.getElementById('supervisorName').value = supervisor;
+      document.getElementById('supervisor_name').value = supervisor;
       document.getElementById('location').value = location;
       document.getElementById('datetime').value = datetime;
       document.getElementById('description').value = description;

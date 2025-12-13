@@ -94,7 +94,7 @@ def loginpage(request):
             new_det = Login(username=user.username, phoneno=phoneno, password=password, role="public")
             new_det.save()
 
-            messages.success(request, "✅ Login Successful!")
+            # messages.success(request, "✅ Login Successful!")
 
             # ✅ Redirect to Mainpage view instead of rendering directly
             return redirect('Mainpage')  # 'mainpage' should be the URL name of your Mainpage view
